@@ -1,5 +1,6 @@
 /static/*
 *.pyc
+migrations
 
 # OS generated files #
 ######################
@@ -20,3 +21,6 @@ Thumbs.db
 
 # Python cache
 __pycache__
+
+# VS code
+.vscode/*

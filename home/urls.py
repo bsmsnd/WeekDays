@@ -16,12 +16,12 @@ urlpatterns = [
     path('transferOwnership/', TransferOwnership.as_view(success_url=reverse_lazy('team_view')),name='transfer_ownership'),
     
     path('newTeam/',CreateTeam.as_view(success_url=reverse_lazy('team_view')),name='new_team'),
-    path('deleteTeam/',RemoveTeam.as_view(success_url=reverse_lazy('dashboard')),name='delete_team'),
-    path('updateTeam/',UpdateTeam.as_view(success_url=reverse_lazy('team_view')),name='update_team'),
-    path('teamView/',TeamView.as_view(success_url=reverse_lazy('team_view')),name='team_view'),
+    path('team/<int:pk>/deleteTeam/',RemoveTeam.as_view(success_url=reverse_lazy('dashboard')),name='delete_team'),
+    path('team/<int:pk>/updateTeam/',UpdateTeam.as_view(success_url=reverse_lazy('team_view')),name='update_team'),
+    path('team/<int:pk>/teamView/',TeamView.as_view(success_url=reverse_lazy('team_view')),name='team_view'),
    
 
-    path('addMember/',InviteMember.as_view(success_url=reverse_lazy('add_member')),name='add_member'),
-    path('promoteMember/',PromoteMember.as_view(success_url=reverse_lazy('promote_member')),name='promote_member'),
-    path('deleteMember/',DeleteMember.as_view(success_url=reverse_lazy('delete_member')),name='delete_member'),
+    path('team/<int:pk>/addMember/',InviteMember.as_view(success_url=reverse_lazy('add_member')),name='add_member'),
+    # path('promoteMember/',PromoteMember.as_view(success_url=reverse_lazy('promote_member')),name='promote_member'),
+    # path('deleteMember/',DeleteMember.as_view(success_url=reverse_lazy('delete_member')),name='delete_member'),
 ]

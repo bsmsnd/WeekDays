@@ -5,8 +5,8 @@ from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm
-
+from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .models import *
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
@@ -47,11 +47,14 @@ class DeleteMember(LoginRequiredMixin, DeleteView):
 
 
 class UserView(LoginRequiredMixin, View):
-    pass
+    model = CustomUser
+    template_name = 'home/user_detail.html'
 
 
-class UpdateUser(LoginRequiredMixin, UpdateView):
-    pass
+class UpdateUser(UserChangeForm):
+    form_class = CustomUserChangeForm
+    success_url = reverse_lazy('user_detail')
+    template_name = 'signup.html'
 
 
 

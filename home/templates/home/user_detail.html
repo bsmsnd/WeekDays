@@ -1,0 +1,20 @@
+{% extends "home/base_menu.html" %}
+{% load crispy_forms_tags %}
+{% load humanize %} <!-- https://docs.djangoproject.com/en/2.1/ref/contrib/humanize -->
+{% block content %}
+
+{% if user.is_authenticated %}
+<h1>Personal Profile</h1>
+<p>Username: {{ user.username }}</p>>
+<p>Name: {{ user.first_name }} {{ user.last_name }}</p>
+<p>Email: {{user.email}}</p>
+<p>Gender: {{user.gender}}</p>
+<p>Phone number: {{user.phone_number}}</p>
+<p>Title: {{user.title}}</p>
+{% endif %}
+
+{% comment %} Go back btn {% endcomment %}
+<p>
+    <a href="{% url 'dashboard' %}">Go to dashboard</a>
+</p>
+{% endblock %}

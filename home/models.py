@@ -3,14 +3,15 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
+        
 class CustomUser(AbstractUser):
     """ Model representation of an User """
 
     # first_name = models.CharField(max_length=100)
     # middle_name = models.CharField(max_length=100, null=True, blank=True)
     # last_name = models.CharField(max_length=100)
-    # date_of_birth = models.DateField(null=True, blank=True)
-    age = models.PositiveSmallIntegerField(default=20)
+    date_of_birth = models.DateField(null=True, blank=True)
+    #age = models.PositiveSmallIntegerField(default=20)
     gender = models.ForeignKey('Gender', on_delete=models.SET_NULL, null=True)
     phone_number = PhoneNumberField(null=True, blank=True)
     title = models.ForeignKey('Title', on_delete=models.SET_NULL, null=True)    

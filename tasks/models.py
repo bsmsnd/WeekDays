@@ -1,6 +1,7 @@
 from django.db import models
-from django.core.validators import MinLengthValidator
+from django.core.validators import MinLengthValidator, MinValueValidator, MaxValueValidator
 from home.models import CustomUser, Team
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -23,11 +24,11 @@ class Task(models.Model):
     )
     assigner_tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True)
     worker_tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True)
-    assigner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    worker = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    priority = model.PositiveSmallIntegerField(
+    assigner = models.ForeignKey(User, on_delete=models.CASCADE)
+    worker = models.ForeignKey(User, on_delete=models.CASCADE)
+    priority = models.PositiveSmallIntegerField(
         default=0,
-        validators=[MinValueValidator(1), MaxValueValidator(3)],        
+        validators=[MinValueValidator(1), MaxValueValidator(3)],
     )
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     due_date = models.DateTimeField(auto_now=True)

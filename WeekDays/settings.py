@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'WeekDays.middleware.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'WeekDays.urls'
@@ -105,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # USER MODEL
-AUTH_USER_MODEL = 'home.CustomUser'
+UTH_USER_MODEL = "users.UserProfile"
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

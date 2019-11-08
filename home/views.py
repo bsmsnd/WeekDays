@@ -128,18 +128,26 @@ class DeleteMember(LoginRequiredMixin, DeleteView):
     pass
 
 
-# class UserView(LoginRequiredMixin, View):
-#     model = CustomUser
-#     template_name = 'home/user_detail.html'
-
-
-# class UpdateUser(UserChangeForm):
-#     form_class = CustomUserChangeForm
-#     success_url = reverse_lazy('user_detail')
-#     template_name = 'signup.html'
-
 class TransferOwnership(LoginRequiredMixin, UpdateView):
     pass
 
+
+############################################################
+# Task-related Views
+
+class TaskDetail(LoginRequiredMixin, View):
+    pass
+
+
+class CreateTask(LoginRequiredMixin, CreateView):
+    pass
+
+
+class DeleteTask(LoginRequiredMixin, DeleteView):
+    pass
+
+
+class UpdateTask(LoginRequiredMixin, UpdateView):
+    pass
 
 

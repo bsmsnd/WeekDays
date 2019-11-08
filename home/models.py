@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models.signals import post_save
+from django.core.validators import MinLengthValidator, MinValueValidator, MaxValueValidator
 
 # Create your models here.
 # class UserProfileManager(models.Manager):
@@ -75,3 +76,47 @@ class Membership(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     role = models.BooleanField()  # manager = 1; employee = 0
+
+
+class Tag(models.Model):
+    name = models.CharField(
+        max_length=200,
+        validators=[MinLengthValidator(2, "Title must be greater than 2 characters")]
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class Task(models.Model):
+    title = models.CharField(
+        max_length=200,
+        validators=[MinLengthValidator(2, "Title must be greater than 2 characters")]
+    )
+    description = models.CharField(
+        max_length=1000,        
+        null=True, blank=True     
+    )
+    results = models.CharField(
+        max_length=1000,        
+        null=True, blank=True     
+    )
+    progress = models.PositiveSmallIntegerField(
+        default=0, 
+        validators=[MaxValueValidator(100)],
+    )
+    assigner_tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='assigner_tag')
+    worker_tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='worker_tag')
+    assigner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigner')
+    worker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='worker')
+    priority = models.PositiveSmallIntegerField(
+        default=0,
+        validators=[MinValueValidator(1), MaxValueValidator(3)],
+    )
+    team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    due_date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+

@@ -9,16 +9,20 @@
 <div class="container">
     <h1>Profile</h1>
     <p>Username: {{ user }}</p>
+    <p>Title: {{ user_profile.title }}</p>
     <p>First name: {{ user.first_name }}</p>
     <p>Last name: {{ user.last_name }}</p>
     <p>Email: {{ user.email }}</p>
-    <p>Description: {{ user.userprofile.description }}</p>
-    <p>Phone: {{ user.userprofile.phone }}</p>
-    <p>City: {{ user.userprofile.city }}</p>
-    <p>Website: {{ user.userprofile.website }}</p>
-    {% if user.userprofile.image %}
+    <p>Phone number: {{ user_profile.phone_number }}</p>
+    <p>Gender: {{ user_profile.gender }}</p>
+    <p>Date of birth: {{ user_profile.date_of_birth }}</p>
+    <!-- {% if user.userprofile.image %}
     <img src="{{ user.userprofile.image.url }}" width="240">
-    {% endif %}
+    {% endif %} -->
+    
+    <button onclick="window.location.href = '{% url 'edit_login_profile' %}';">Edit Login Profile</button>
+    <button onclick="window.location.href = '{% url 'edit_user_profile' %}';">Edit User Profile</button>
+    <button onclick="window.location.href = '{% url 'change_password' %}';">Change Password</button>
 </div>
 
 {% endblock %}

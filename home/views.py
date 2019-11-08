@@ -7,12 +7,13 @@ from django.contrib.auth import login, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from .forms import *
 from .models import *
-from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm
+from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm, UserCreationForm
 
-# class SignUpView(CreateView):
-#     form_class = CustomUserCreationForm
-#     success_url = reverse_lazy('login')
-#     template_name = 'signup.html'
+
+class SignUpView(CreateView):
+    form_class = CustomUserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'accounts/reg_form.html'
 
 def register(request):
     if request.method =='POST':
@@ -26,15 +27,19 @@ def register(request):
         args = {'form': form}
         return render(request, 'accounts/reg_form.html', args)
 
+@login_required
 def view_profile(request, pk=None):
     if pk:
         user = User.objects.get(pk=pk)
+        user_profile = UserProfile.objects.get(user=user)
     else:
         user = request.user
-    args = {'user': user}
+        user_profile = UserProfile.objects.get(user=user)
+    args = {'user': user, 'user_profile': user_profile}
     return render(request, 'accounts/profile.html', args)
 
-def edit_profile(request):
+@login_required
+def edit_login_profile(request):
     if request.method == 'POST':
         form = EditProfileForm(request.POST, instance=request.user)
 
@@ -44,8 +49,9 @@ def edit_profile(request):
     else:
         form = EditProfileForm(instance=request.user)
         args = {'form': form}
-        return render(request, 'accounts/edit_profile.html', args)
+        return render(request, 'accounts/edit_login_profile.html', args)
 
+@login_required
 def change_password(request):
     if request.method == 'POST':
         form = PasswordChangeForm(data=request.POST, user=request.user)
@@ -61,6 +67,32 @@ def change_password(request):
 
         args = {'form': form}
         return render(request, 'accounts/change_password.html', args)
+
+
+
+class UserProfileUpdateView(LoginRequiredMixin, View):
+    template = "accounts/edit_user_profile.html"
+    success_url = reverse_lazy('view_profile')
+    
+    def get(self, request):
+        userprofile = UserProfile.objects.get(user=request.user)        
+        form = CreateForm(instance=userprofile)
+        ctx = {'form': form}
+        return render(request, self.template, ctx)
+
+    def post(self, request):
+        userprofile = UserProfile.objects.get(user=request.user)
+        form = CreateForm(request.POST, instance=userprofile)
+
+        if not form.is_valid():
+            ctx = {'form': form}
+            return render(request, self.template, ctx)                
+        
+        # Add owner to the model before saving
+        userprofile = form.save(commit=False)        
+        userprofile.save()
+        
+        return redirect(self.success_url)
 
 
 class TaskView(LoginRequiredMixin, View):

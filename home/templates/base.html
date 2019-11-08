@@ -25,9 +25,7 @@
                 {% if user.is_authenticated %}
                 <ul class="nav navbar-nav">
                     <li><a href="{% url 'home' %}">Home</a></li>
-                    <li><a href="{% url 'view_profile' %}">Profile</a></li>
-                    <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
-                    <li><a href="{% url 'change_password' %}">Change Password</a></li>
+                    <li><a href="{% url 'view_profile' %}">Profile</a></li>                    
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="{% url 'logout' %}">Log out</a></li>

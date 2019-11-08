@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block head %}
+<title>Update Profile</title>
+{% endblock %}
+{% block body %}
+<div class="container">
+<p>
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" value="Submit">
+    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'view_profile' %}';return false;">
+  </form>
+</p>
+</div>
+{% endblock %}

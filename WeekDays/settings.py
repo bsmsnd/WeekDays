@@ -39,6 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'phonenumber_field',  # for phone number field
+    'django_extensions', 
+    'crispy_forms',  
+    'rest_framework', 
+    'social_django',  
 
     'home.apps.HomeConfig',
 
@@ -52,7 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'WeekDays.middleware.LoginRequiredMiddleware',
+#    'WeekDays.middleware.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'WeekDays.urls'

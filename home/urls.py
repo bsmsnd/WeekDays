@@ -11,13 +11,17 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, 
 
 # app_name='home'
 urlpatterns = [
-    path('', LoginView.as_view(template_name='accounts/login.html'),name='home'),
+    # path('', LoginView.as_view(template_name='accounts/login.html'),name='home'),
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),    
+    path('accounts/login/', LoginView.as_view(template_name='accounts/login.html'),name='accounts_login'),
     path('login/', LoginView.as_view(template_name='accounts/login.html'),name='login'),
     path('logout/', LogoutView.as_view(template_name='accounts/logout.html'),name='logout'),            
-    url(r'^register/$', register, name='register'),
+    path('register/', SignUpView.as_view(success_url=reverse_lazy('login')),name='register'),            
+    # url(r'^register/$', register, name='register'),
     url(r'^profile/$', view_profile, name='view_profile'),
     url(r'^profile/(?P<pk>\d+)/$', view_profile, name='view_profile_with_pk'),
-    url(r'^profile/edit/$', edit_profile, name='edit_profile'),
+    url(r'^profile/edit/$', edit_login_profile, name='edit_login_profile'),
+    url(r'profile/update/$',UserProfileUpdateView.as_view(), name='edit_user_profile'),
     url(r'^change-password/$', change_password, name='change_password'),
     
     re_path(r'^reset-password/$', PasswordResetView.as_view(template_name='accounts/reset_password.html'),name='reset_password'),

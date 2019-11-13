@@ -9,7 +9,6 @@ from django.core.validators import MinLengthValidator, MinValueValidator, MaxVal
 #     def get_queryset(self):
 #         return super(UserProfileManager, self).get_queryset()
 
-
 class UserProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -66,8 +65,8 @@ class Title(models.Model):
 class Team(models.Model):
     name = models.CharField(max_length=100)
     summary = models.TextField(max_length=1000, help_text='Enter a brief summary of the team', null=True, blank=True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
+    team_members = models.ManyToManyField(User, through='Membership', related_name='team_members')
     def __str__(self):
         return self.name
 
@@ -75,7 +74,19 @@ class Team(models.Model):
 class Membership(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    role = models.BooleanField()  # manager = 1; employee = 0
+
+    MANAGER = 1
+    EMPLOYEE = 100
+
+    MEMBER_CHOICE = (
+        (MANAGER, 'Manager'),
+        (EMPLOYEE, 'Employee'),
+    )
+
+    role = models.IntegerField(choices=MEMBER_CHOICE, default=EMPLOYEE)
+
+    def __str__(self):
+        return "User " + str(self.user.id) + " <--> Team" + str(self.team.id)
 
 
 class Tag(models.Model):
@@ -101,17 +112,32 @@ class Task(models.Model):
         max_length=1000,        
         null=True, blank=True     
     )
-    progress = models.PositiveSmallIntegerField(
-        default=0, 
-        validators=[MaxValueValidator(100)],
+
+    PROGRESS_CHOICES = (
+        (0, 'Not started'),
+        (1, '~25%'),
+        (2, '~50%'),
+        (3, '~75%'),
+        (4, 'Completed')
     )
+
+    progress = models.PositiveSmallIntegerField(
+        choices=PROGRESS_CHOICES, default=0,        
+    )
+
     assigner_tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='assigner_tag')
     worker_tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='worker_tag')
     assigner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigner')
     worker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='worker')
+    
+    PRIORITY_CHOICES = (
+        (0, 'Low'),
+        (1, 'Medium'),
+        (2, 'High'),
+    )
+    
     priority = models.PositiveSmallIntegerField(
-        default=0,
-        validators=[MinValueValidator(1), MaxValueValidator(3)],
+        choices=PRIORITY_CHOICES, default=0,        
     )
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     due_date = models.DateTimeField(auto_now=True)

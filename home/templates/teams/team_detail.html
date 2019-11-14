@@ -16,6 +16,15 @@
     <li>{{manager.display_name}}</li>
     {% endfor %}
     </ul>
+
+    <h3> Employees </h3>
+    {% if employees%}
+    {% for employee in employees %}
+    <li>{{employee.display_name}}</li>
+    {% endfor %}
+    {% else %}
+    <p>There is no employee in the team.</p>
+    {% endif %}
     <!-- {% if user.userprofile.image %}
     <img src="{{ user.userprofile.image.url }}" width="240">
     {% endif %} -->

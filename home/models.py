@@ -22,8 +22,8 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
-    def __display_name__(self):
-        return self.user.first_name + " " + self.user.last_name + "( %s )" % self.user.username
+    def display_name(self):
+        return self.user.first_name + " " + self.user.last_name + " (%s)" % self.user.username
 
 
 def create_profile(sender, **kwargs):

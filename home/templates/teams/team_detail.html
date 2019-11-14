@@ -9,6 +9,13 @@
 <div class="container">
     <h2>Team {{team}}</h2>
     <p>Summary: {{summary}}</p>
+
+    <h3> Managers </h3>
+    <ul>
+    {% for manager in managers %}
+    <li>{{manager.display_name}}</li>
+    {% endfor %}
+    </ul>
     <!-- {% if user.userprofile.image %}
     <img src="{{ user.userprofile.image.url }}" width="240">
     {% endif %} -->

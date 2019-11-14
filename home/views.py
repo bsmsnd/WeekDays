@@ -119,8 +119,13 @@ class TeamDetailView(LoginRequiredMixin, View):
         team = Team.objects.get(id=pk)
         #comments = Comment.objects.filter(ad=ad).order_by('-updated_at')
         #comment_form = CommentForm()
-        
-        context = { 'team':team, 'summary': team.summary}
+        managers_profile_id = Membership.objects.filter(role=1, team=team).values('user')
+        manager_profile = UserProfile.objects.filter(id__in=managers_profile_id)
+
+        employee_profile_id = Membership.objects.filter(role=100, team=team).values('user')
+        employee_profile = UserProfile.objects.filter(id__in=employee_profile_id)
+
+        context = { 'team':team, 'summary': team.summary, 'managers' : manager_profile, 'employees': employee_profile}
         return render(request, self.template_name, context)
 
 

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+<title>Team Detail</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h2>Team {{team}}</h2>
+    <p>Summary: {{summary}}</p>
+    <!-- {% if user.userprofile.image %}
+    <img src="{{ user.userprofile.image.url }}" width="240">
+    {% endif %} -->
+</div>
+
+{% endblock %}

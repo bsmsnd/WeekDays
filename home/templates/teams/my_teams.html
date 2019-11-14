@@ -1,1 +1,26 @@
-<!-- To do -->
+{% extends 'base.html' %}
+
+{% block head %}
+<title>My Teams</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% if teams %}
+    <ul>
+        {% for team in teams %}
+        <li>
+            <a href="{% url 'team_detail' team.id%}">{{team.name}}</a>
+            {% if team.owner == user.id %}
+            (<a href="{% url 'team_update' team.id %}"><i class="fa fa-pencil"></i></a> |
+            <a href="{% url 'team_remove' team.id %}"><i class="fa fa-trash"></i></a>)
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>You have not joined any team yet. <a href="{% url 'team_create' %}">Create a team now!</a></p>
+    {% endif %}
+</div>
+{% endblock %}
+    

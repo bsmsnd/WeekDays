@@ -16,6 +16,7 @@ class UserProfile(models.Model):
     gender = models.ForeignKey('Gender', on_delete=models.SET_NULL, null=True)
     phone_number = PhoneNumberField(null=True, blank=True)
     title = models.ForeignKey('Title', on_delete=models.SET_NULL, null=True)    
+    teams = models.ManyToManyField('Team', through='Membership')
     # london = UserProfileManager()
 
     def __str__(self):
@@ -66,13 +67,13 @@ class Team(models.Model):
     name = models.CharField(max_length=100)
     summary = models.TextField(max_length=1000, help_text='Enter a brief summary of the team', null=True, blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
-    team_members = models.ManyToManyField(User, through='Membership', related_name='team_members')
+    team_members = models.ManyToManyField(UserProfile, through='Membership', related_name='team_members')
     def __str__(self):
         return self.name
 
 
 class Membership(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
 
     MANAGER = 1

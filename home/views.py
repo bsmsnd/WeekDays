@@ -1,12 +1,13 @@
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views import View
+from django.views import View, generic
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth import login, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from .forms import *
 from .models import *
+from .owner import *
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm, UserCreationForm
 
 
@@ -95,28 +96,63 @@ class UserProfileUpdateView(LoginRequiredMixin, View):
         return redirect(self.success_url)
 
 
-class TaskView(LoginRequiredMixin, View):
+class TaskView(LoginRequiredMixin, generic.ListView):
     pass
 
 
-class TeamView(LoginRequiredMixin, View):
-    pass
+class TeamListView(LoginRequiredMixin, generic.ListView):
+    template = "teams/my_teams.html"
+    model = Team
+
+    def get(self, request):
+        user_profile = UserProfile.objects.get(user=request.user)
+        teams = user_profile.teams.all()
+        context = {'teams' : teams}
+        return render(request, self.template, context)
 
 
-class CreateTeam(LoginRequiredMixin, CreateView):
-    pass
+class TeamDetailView(LoginRequiredMixin, View):
+    model = Team
+    template_name = "teams/team_detail.html"
+
+    def get(self, request, pk) :
+        team = Team.objects.get(id=pk)
+        #comments = Comment.objects.filter(ad=ad).order_by('-updated_at')
+        #comment_form = CommentForm()
+        
+        context = { 'team':team, 'summary': team.summary}
+        return render(request, self.template_name, context)
 
 
-class UpdateTeam(LoginRequiredMixin, UpdateView):
-    pass
+class CreateTeam(generic.CreateView):
+    template_name = 'teams/team_form.html'
+    model = Team
+    fields = ['name', 'summary']
+
+    def form_valid(self, form):        
+        print('form_valid called')
+        team = form.save(commit=False)
+        team.owner = self.request.user
+        team.save()
+
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        membership = Membership(user=user_profile, team=team, role=1)
+        membership.save()
+        return super(CreateTeam, self).form_valid(form)
+
+
+class UpdateTeam(OwnerUpdateView):
+    template_name = 'teams/team_form.html'
+    model = Team
+    fields = ['name', 'summary']
 
 
 class RemoveTeam(LoginRequiredMixin, DeleteView):
-    pass
+    model = Team
+    template_name = "teams/delete_team.html"
 
 
-class InviteMember(LoginRequiredMixin, View):
-    
+class InviteMember(LoginRequiredMixin, View):    
     pass
     
 

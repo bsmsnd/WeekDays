@@ -38,5 +38,14 @@ urlpatterns += [
     path('tasks/<int:pk>', TaskDetail.as_view(), name='task_detail'),
     path('tasks/create', CreateTask.as_view(), name='create_task'),
     path('tasks/<int:pk>/update', UpdateTask.as_view(success_url=reverse_lazy('task_detail')),name='update_task'),  # TODO: need to specify task ID somewhere    
-    path('tasks/delete', CreateTask.as_view(success_url=reverse_lazy('dashboard')), name='delete_task')
+    path('tasks/delete', CreateTask.as_view(success_url=reverse_lazy('dashboard')),name='delete_task')
+]
+
+# Teams
+urlpatterns += [
+    path('myTeams/', TeamListView.as_view(), name='team_list'),
+    path('teams/<int:pk>', TeamDetailView.as_view(), name='team_detail'),
+    path('teams/<int:pk>/update', UpdateTeam.as_view(), name='team_update'),
+    path('teams/create', CreateTeam.as_view(success_url=reverse_lazy('team_list')), name='team_create'),
+    path('teams/<int:pk>/remove', RemoveTeam.as_view(), name='team_remove'),
 ]

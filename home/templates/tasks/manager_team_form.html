@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+<title>Task Description</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+<p>
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" value="Submit">
+    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'team_list' %}';return false;">
+  </form>
+</p>
+</div>
+{% endblock %}

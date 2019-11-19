@@ -9,7 +9,8 @@ from .forms import *
 from .models import *
 from .owner import *
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm, UserCreationForm
-from django.http import HttpResponse, Http404
+from django.http import HttpResponseNotFound
+from .helper import get_user_name_display
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
@@ -159,6 +160,7 @@ class RemoveTeam(LoginRequiredMixin, DeleteView):
     template_name = "teams/delete_team.html"
 
 
+<<<<<<< Updated upstream
 class InviteMember(LoginRequiredMixin, View):  
     def post(self, request, pk):                
         userProfile_id_to_add = request.POST.get("user_id")
@@ -180,6 +182,11 @@ class InviteMember(LoginRequiredMixin, View):
         member.save()
         print(member)        
         return redirect(reverse("team_detail", args=[pk]))
+=======
+class InviteMember(LoginRequiredMixin, View):
+    
+    pass
+>>>>>>> Stashed changes
     
 
 class PromoteMember(LoginRequiredMixin, UpdateView):
@@ -198,11 +205,49 @@ class TransferOwnership(LoginRequiredMixin, UpdateView):
 # Task-related Views
 
 class TaskDetail(LoginRequiredMixin, View):
-    pass
+    model = Task
+    template_name = "tasks/task_detail_page.html"
+
+    def get(self, request, pk) :
+        task = Task.objects.get(id=pk)
+        user = request.user
+        context = {
+            "title": task.title, 
+            "description": task.description,
+            "results": task.results,
+            "progress": task.get_progress_display(),
+            "priority": task.get_priority_display(),
+            "due_date": task.due_date
+        }
+        if (task.assigner == user):
+            context["associate_user"] = get_user_name_display(task.worker)
+            context["role"] = 1
+        elif (task.worker == user):
+            context["associate_user"] = get_user_name_display(task.assigner)
+            context["role"] = 100
+        else:
+            return HttpResponseNotFound("Task not found!")
+        
+        return render(request, self.template_name, context)
+     
+    
 
 
 class CreateTask(LoginRequiredMixin, CreateView):
-    pass
+    template_name = 'tasks/manager_team_form.html'
+    model = Task
+    fields = ['title', 'description', 'worker', 'priority', 'team', 'due_date']
+
+    def form_valid(self, form):        
+        print('form_valid called')
+        task = form.save(commit=False)
+        team.owner = self.request.user
+        team.save()
+
+        user_profile = UserProfile.objects.get(user=self.request.user)
+        membership = Membership(user=user_profile, team=team, role=1)
+        membership.save()
+        return super(CreateTeam, self).form_valid(form)
 
 
 class DeleteTask(LoginRequiredMixin, DeleteView):

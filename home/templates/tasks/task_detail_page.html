@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+<title>Task Detail</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h2>Task Detail {{title}}</h2>
+
+    <h3>Task Description</h3>
+    <p>{{description}}</p>
+    
+    <h3>Priority: {{priority}}</h3>
+    <h3>Due: {{due_date}}</h3>
+    {% comment %} <ul> {% endcomment %}    
+    {% if role == 1 %}
+    <p>The task was assigned to {{associate_user}}</p>
+    {% else %}
+    <p>The task was assigned by {{associate_user}}</p>
+    {% endif %}
+     
+     <h3>Results</h3>
+     <p>Current Progress: {{progress}} </p>
+     <p>{{results}}</p>
+     
+    <!-- {% if user.userprofile.image %}
+    <img src="{{ user.userprofile.image.url }}" width="240">
+    {% endif %} -->
+</div>
+
+{% endblock %}

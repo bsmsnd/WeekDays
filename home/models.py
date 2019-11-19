@@ -136,7 +136,7 @@ class Task(models.Model):
     assigner_tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='assigner_tag')
     worker_tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='worker_tag')
     assigner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigner')
-    worker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='worker')
+    worker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='employee')
     
     PRIORITY_CHOICES = (
         (0, 'Low'),

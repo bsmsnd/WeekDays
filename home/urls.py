@@ -14,6 +14,7 @@ urlpatterns = [
     # path('', LoginView.as_view(template_name='accounts/login.html'),name='home'),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),    
     path('accounts/login/', LoginView.as_view(template_name='accounts/login.html'),name='accounts_login'),
+    # path('accounts/login/', LoginView.as_view(template_name='index.html'), name='accounts_login'),    
     path('login/', LoginView.as_view(template_name='accounts/login.html'),name='login'),
     path('logout/', LogoutView.as_view(template_name='accounts/logout.html'),name='logout'),            
     path('register/', SignUpView.as_view(success_url=reverse_lazy('login')),name='register'),            
@@ -30,7 +31,8 @@ urlpatterns = [
     
     path('reset-password/complete/', PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     
-    path('reset-password/completes/', PasswordResetDoneView.as_view(), name='password_reset_complete'),    
+    path('reset-password/completes/', PasswordResetDoneView.as_view(), name='password_reset_complete'),
+    
 ]
  
  # Tasks
@@ -46,6 +48,11 @@ urlpatterns += [
     path('myTeams/', TeamListView.as_view(), name='team_list'),
     path('teams/<int:pk>', TeamDetailView.as_view(), name='team_detail'),
     path('teams/<int:pk>/update', UpdateTeam.as_view(), name='team_update'),
+    path('teams/<int:pk>/addMember',InviteMember.as_view(), name="add_user"),
+    # path('teams/addmember', invite, name='add_member'),
     path('teams/create', CreateTeam.as_view(success_url=reverse_lazy('team_list')), name='team_create'),
-    path('teams/<int:pk>/remove', RemoveTeam.as_view(), name='team_remove'),
+
+    path('teams/<int:pk>/remove', RemoveTeam.as_view(success_url=reverse_lazy('team_list')), name='team_remove'),
+
+    
 ]

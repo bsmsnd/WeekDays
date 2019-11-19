@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, ReadOnlyPasswordHashField
 
-from .models import UserProfile
+from .models import UserProfile, Membership,Team
 from django.utils.translation import gettext, gettext_lazy as _
 
 

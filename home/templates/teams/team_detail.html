@@ -24,10 +24,55 @@
     {% endfor %}
     {% else %}
     <p>There is no employee in the team.</p>
-    {% endif %}
+    {% endif %} 
     <!-- {% if user.userprofile.image %}
     <img src="{{ user.userprofile.image.url }}" width="240">
     {% endif %} -->
+
+    {% comment %} dropdown {% endcomment %}
+    
+    
+    <form action="{% url 'add_user' team.id %}" method="post">
+    {% csrf_token %}
+    <select name="user_id">
+    <option value="0">-- Please Select --</option>
+    {% for user in ulist %}
+    <option value="{{user.id}}">{{ user.diaplay_name_and_email }}</option>
+    {% endfor %}
+    </select>
+    <input type="submit">
+    </form>
+
+
+    <input type="text" id="add_member" name="add_member"  placeholder="add a member">
+    <button onclick="addMember(document.getElementById('add_member').value);">(Test)Add Team Member</button>
+    
+    <button onclick="window.location.href = '{% url 'team_remove' team.id %}';">Delete Team</button>
 </div>
 
+<script>
+function addMember(user){
+    /*fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, cors, *same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        redirect: "follow", // manual, *follow, error
+        referrer: "no-referrer", // no-referrer, *client
+    }).then(
+        function(data){
+            console.log(url, 'finished');
+            $("#unfavorite_star_"+thing_id).toggle();
+            $("#favorite_star_"+thing_id).toggle();
+        }
+    );*/
+    alert("You are now looking for " + user);
+
+}
+</script>
+
 {% endblock %}
+

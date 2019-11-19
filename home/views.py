@@ -9,7 +9,7 @@ from .forms import *
 from .models import *
 from .owner import *
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm, UserCreationForm
-
+from django.http import HttpResponse, Http404
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
@@ -124,8 +124,9 @@ class TeamDetailView(LoginRequiredMixin, View):
 
         employee_profile_id = Membership.objects.filter(role=100, team=team).values('user')
         employee_profile = UserProfile.objects.filter(id__in=employee_profile_id)
+        ulist = UserProfile.objects.all()
 
-        context = { 'team':team, 'summary': team.summary, 'managers' : manager_profile, 'employees': employee_profile}
+        context = { 'team':team, 'summary': team.summary, 'managers' : manager_profile, 'employees': employee_profile, 'ulist': ulist}
         return render(request, self.template_name, context)
 
 
@@ -152,13 +153,33 @@ class UpdateTeam(OwnerUpdateView):
     fields = ['name', 'summary']
 
 
+
 class RemoveTeam(LoginRequiredMixin, DeleteView):
     model = Team
     template_name = "teams/delete_team.html"
 
 
-class InviteMember(LoginRequiredMixin, View):    
-    pass
+class InviteMember(LoginRequiredMixin, View):  
+    def post(self, request, pk):                
+        userProfile_id_to_add = request.POST.get("user_id")
+        print(pk)
+        print(userProfile_id_to_add)
+        team = Team.objects.get(id=pk)
+        # user_to_add = User.objects.get(id=userProfile_id_to_add)
+        userProfile = UserProfile.objects.get(user=userProfile_id_to_add)
+
+        # TODO: verify correctness of the data
+        member_exist = Membership.objects.filter(user=userProfile, team=team)
+        if member_exist:
+            pass
+        if team.owner != request.user:
+            print("user not owner!")        
+            pass
+
+        member = Membership(user=userProfile, team=team)
+        member.save()
+        print(member)        
+        return redirect(reverse("team_detail", args=[pk]))
     
 
 class PromoteMember(LoginRequiredMixin, UpdateView):

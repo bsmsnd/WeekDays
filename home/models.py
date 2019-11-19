@@ -25,6 +25,9 @@ class UserProfile(models.Model):
     def display_name(self):
         return self.user.first_name + " " + self.user.last_name + " (%s)" % self.user.username
 
+    def diaplay_name_and_email(self):
+        return self.user.first_name + " " + self.user.last_name + " (%s)" % self.user.email
+
 
 def create_profile(sender, **kwargs):
     if kwargs['created']:
@@ -88,6 +91,7 @@ class Membership(models.Model):
     )
 
     role = models.IntegerField(choices=MEMBER_CHOICE, default=EMPLOYEE)
+   
 
     def __str__(self):
         return "User " + str(self.user.id) + " <--> Team" + str(self.team.id)

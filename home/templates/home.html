@@ -1,10 +1,21 @@
 <!-- templates/home.html -->
 {% extends 'base.html' %}
+<style type="text/css">
 
+  .linear{
+  
+  background-image: linear-gradient(to top, #fff,#000);
+  
+  height: 300px;
+  
+  }
+  
+  </style>
 
 {% block body %}
 <div class="container">
 <h1>Welcome</h1>
+
 {% if user.is_authenticated %}
   Hi {{ user.username }}!
   <p><a href="{% url 'logout' %}">logout</a></p>
@@ -14,4 +25,5 @@
   <a href="{% url 'register' %}">signup</a>
 {% endif %}
 </div>
+
 {% endblock %}

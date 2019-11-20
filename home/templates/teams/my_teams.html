@@ -1,12 +1,14 @@
-{% extends 'base.html' %}
 
+{% extends 'base.html' %}
+{% load static %}
 {% block head %}
+
 <title>My Teams</title>
 {% endblock %}
 
 {% block body %}
 <div class="container">
-    <h2>My Teams</h2>
+    <h2>My Teams <i class="fas fa-users"></i></h2>
     {% if teams %}
     <ul>
         {% for team in teams %}
@@ -22,6 +24,10 @@
     {% else %}
     <p>You have not joined any team yet. <a href="{% url 'team_create' %}">Create a team now!</a></p>
     {% endif %}
+    
+            <button onclick="window.location.href = '{% url 'team_create' %}';">Create Team</button>
+    
+    
 </div>
 {% endblock %}
     

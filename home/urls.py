@@ -49,6 +49,9 @@ urlpatterns += [
     path('teams/<int:pk>', TeamDetailView.as_view(), name='team_detail'),
     path('teams/<int:pk>/update', UpdateTeam.as_view(), name='team_update'),
     path('teams/<int:pk>/addMember',InviteMember.as_view(), name="add_user"),
+    # path('teams/<int:pk>/deleteMember/<int:pk2>/',remove_member, name="delete_member"),
+    url(r'^teams/(?P<pk>[0-9]+)/deleteMember/(?P<pk2>[0-9]+)$', remove_member, name='delete_member'),
+    # url(r'^teams/(?P<pk>[0-9]+)/deleteMember/', remove_member, name='delete_member'),
     # path('teams/addmember', invite, name='add_member'),
     path('teams/create', CreateTeam.as_view(success_url=reverse_lazy('team_list')), name='team_create'),
 

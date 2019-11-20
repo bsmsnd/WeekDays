@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 
 {% block head %}
 <title>Profile</title>
@@ -19,10 +19,11 @@
     <!-- {% if user.userprofile.image %}
     <img src="{{ user.userprofile.image.url }}" width="240">
     {% endif %} -->
-    
+    {% if request.user == user%}
     <button onclick="window.location.href = '{% url 'edit_login_profile' %}';">Edit Login Profile</button>
     <button onclick="window.location.href = '{% url 'edit_user_profile' %}';">Edit User Profile</button>
     <button onclick="window.location.href = '{% url 'change_password' %}';">Change Password</button>
+    {%endif%}
 </div>
 
 {% endblock %}

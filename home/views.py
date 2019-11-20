@@ -9,8 +9,9 @@ from .forms import *
 from .models import *
 from .owner import *
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm, UserCreationForm
-from django.http import HttpResponseNotFound
-from .helper import get_user_name_display
+from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.contrib import messages
+from django.shortcuts import get_list_or_404, get_object_or_404
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
@@ -160,41 +161,76 @@ class RemoveTeam(LoginRequiredMixin, DeleteView):
     template_name = "teams/delete_team.html"
 
 
-<<<<<<< Updated upstream
 class InviteMember(LoginRequiredMixin, View):  
     def post(self, request, pk):                
         userProfile_id_to_add = request.POST.get("user_id")
-        print(pk)
-        print(userProfile_id_to_add)
+        #print(pk)
+        #print(userProfile_id_to_add)
         team = Team.objects.get(id=pk)
         # user_to_add = User.objects.get(id=userProfile_id_to_add)
         userProfile = UserProfile.objects.get(user=userProfile_id_to_add)
-
+        
         # TODO: verify correctness of the data
         member_exist = Membership.objects.filter(user=userProfile, team=team)
-        if member_exist:
-            pass
+        
         if team.owner != request.user:
-            print("user not owner!")        
+            messages.error(request, 'Only team owner can add the team member!!')
+            return redirect(reverse("team_detail", args=[pk]))
+             
+        if member_exist:
+            messages.error(request, 'This user is alreay in the team')
             pass
 
         member = Membership(user=userProfile, team=team)
         member.save()
-        print(member)        
+        #print(member)        
         return redirect(reverse("team_detail", args=[pk]))
-=======
-class InviteMember(LoginRequiredMixin, View):
-    
-    pass
->>>>>>> Stashed changes
     
 
 class PromoteMember(LoginRequiredMixin, UpdateView):
     pass
 
 
-class DeleteMember(LoginRequiredMixin, DeleteView):
-    pass
+# class DeleteMember(LoginRequiredMixin,DeleteView):
+#     # model = Membership
+#     # template_name = "teams/delete_member.html"
+
+
+
+
+    # model = Team
+    # success_message = "Membership deleted successfully"
+    # success_url = reverse_lazy('team_list')
+    # context_object_name = 'teams'
+    # template_name = "teams/delete_member.html"
+
+    # def dispatch(self, *args, **kwargs):
+    #     return super().dispatch(*args, **kwargs)
+
+    # def delete(self, request, *args, **kwargs):
+    #     self.object = self.get_object()
+
+    #     Membership.objects\
+    #         .filter(team_members=self.object.team_members)\
+    #         .delete()
+
+    #     self.object.delete()
+
+    #     return HttpResponseRedirect(self.get_success_url())
+    
+
+
+def remove_member(request, pk,pk2):
+    userobj= get_object_or_404(UserProfile, id = pk2)
+    team = Team.objects.get(id=pk)
+
+    team.team_members.remove(userobj)
+
+    return redirect(reverse('team_detail', args=[pk]))
+
+  
+
+
 
 
 class TransferOwnership(LoginRequiredMixin, UpdateView):

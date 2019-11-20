@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block body %}
+{% comment %} {% block body %}
 <div class="container">
     <h1>Welcome</h1>
     <p>
@@ -10,7 +10,41 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Login</button>
+       
+        <button  type="submit" >Login</button>
     </form>
 </div>
+
+
+{% endblock %} {% endcomment %}
+
+{% block body %}
+    <div class="container">
+    <div id="login">
+        <form class="form-horizontal" name="LoginForm" action="/login/" method="post">
+        {% csrf_token %}
+        {% if next %}
+            <input type="hidden" name="next" value="{{ next }}" />
+        {% endif %}
+        <div class="control-group">
+            <label class="control-label" for="username">Username</label>
+            <div class="controls">
+                <input type="text" id="username" name="username"  placeholder="Username">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="password">Password</label>
+            <div class="controls">
+                <input type="password" name="password" id="password" placeholder="Password">
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn">Login</button>
+                <button type="submit" class="btn">Cancel</button>
+            </div>
+        </div>
+        </form>
+    </div>
+    </div>
 {% endblock %}

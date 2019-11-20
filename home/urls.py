@@ -39,8 +39,10 @@ urlpatterns = [
 urlpatterns += [
     path('tasks/<int:pk>', TaskDetail.as_view(), name='task_detail'),
     path('tasks/create', CreateTask.as_view(), name='create_task'),
-    path('tasks/<int:pk>/update', UpdateTask.as_view(success_url=reverse_lazy('task_detail')),name='update_task'),  # TODO: need to specify task ID somewhere    
-    path('tasks/delete', CreateTask.as_view(success_url=reverse_lazy('dashboard')),name='delete_task')
+    path('tasks/<int:pk>/edit', EditTask.as_view(),name='edit_task'),
+    path('tasks/<int:pk>/update', UpdateTask.as_view(),name='update_task'),  # TODO: need to specify task ID somewhere    
+    path('tasks/delete', CreateTask.as_view(success_url=reverse_lazy('dashboard')),name='delete_task'),
+    path('dashboard', DashboardView.as_view(), name='dashboard')
 ]
 
 # Teams

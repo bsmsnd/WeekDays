@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block head %}
+<title>Dashboard</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+<h2>Dashboard</h2>
+
+<h3>My managed tasks</h3>
+{% if manager_task_list %}    
+    {% for task in manager_task_list %}
+    <a href="{% url 'task_detail' task.id %}">{{task.title}}</a>
+    {% endfor %}
+{% else %}
+    <p>You do not have any ongoing tasks managed. </p> 
+{% endif %}
+
+<h3>Tasks TODO</h3>
+{% if assigned_task_list %}
+    {% for task in assigned_task_list %}
+    <a href="{% url 'task_detail' task.id %}">{{task.title}}</a>
+    {% endfor %}
+{% else %}
+    <p>You do not have any active tasks to work on. </p> 
+{% endif %}
+
+</div>
+{% endblock %}

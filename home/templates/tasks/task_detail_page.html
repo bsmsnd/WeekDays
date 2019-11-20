@@ -16,9 +16,9 @@
     <h3>Due: {{due_date}}</h3>
     {% comment %} <ul> {% endcomment %}    
     {% if role == 1 %}
-    <p>The task was assigned to {{associate_user}}</p>
+    <p>The task was assigned to {{associate_user.display_name}}</p>
     {% else %}
-    <p>The task was assigned by {{associate_user}}</p>
+    <p>The task was assigned by {{associate_user.display_name}}</p>
     {% endif %}
      
      <h3>Results</h3>
@@ -28,6 +28,12 @@
     <!-- {% if user.userprofile.image %}
     <img src="{{ user.userprofile.image.url }}" width="240">
     {% endif %} -->
+    {% if role == 1 %}
+    <button onclick="window.location.href = '{% url 'edit_task' task_id %}';">Edit Task</button>
+    {% else %}
+    <button onclick="window.location.href = '{% url 'update_task' task_id %}';">Update Task</button>
+    {% endif %}
+
 </div>
 
 {% endblock %}

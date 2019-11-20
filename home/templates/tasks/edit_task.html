@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+<title>Task Edit</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+<h2>{{ title }}</h2>
+<p>The task was assigned to {{employee.display_name}}</p>
+<p>
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <input type="submit" value="Submit">
+    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'task_detail' pk %}';return false;">
+  </form>
+</p>
+
+<h3>Results</h3>
+<p>Current Progress: {{progress}} </p>
+<p>{{results}}</p>
+</div>
+{% endblock %}

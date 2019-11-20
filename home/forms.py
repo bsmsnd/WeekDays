@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, ReadOnlyPasswordHashField
 
-from .models import UserProfile, Membership,Team
+from .models import UserProfile, Membership, Team, Task
 from django.utils.translation import gettext, gettext_lazy as _
 
 
@@ -108,3 +108,13 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ('username', 'first_name', 'last_name', 'email')
 
 
+class TaskEmployeeUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['progress', 'results']
+
+
+class TaskManagerEditForm(forms.ModelForm):
+    class Meta:
+        model = Task
+        fields = ['description', 'priority', 'due_date']

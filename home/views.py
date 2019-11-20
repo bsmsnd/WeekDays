@@ -1,7 +1,7 @@
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View, generic
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth import login, authenticate, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
@@ -255,6 +255,7 @@ class TaskDetail(LoginRequiredMixin, View):
             "priority": task.get_priority_display(),
             "due_date": task.due_date
         }
+        context["task_id"] = pk
         if (task.assigner == user):
             context["associate_user"] = get_user_name_display(task.worker)
             context["role"] = 1
@@ -265,9 +266,6 @@ class TaskDetail(LoginRequiredMixin, View):
             return HttpResponseNotFound("Task not found!")
         
         return render(request, self.template_name, context)
-     
-    
-
 
 class CreateTask(LoginRequiredMixin, CreateView):
     template_name = 'tasks/manager_team_form.html'
@@ -276,21 +274,106 @@ class CreateTask(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):        
         print('form_valid called')
-        task = form.save(commit=False)
-        team.owner = self.request.user
-        team.save()
+        task = form.save(commit=False)        
+        task.save()
 
-        user_profile = UserProfile.objects.get(user=self.request.user)
-        membership = Membership(user=user_profile, team=team, role=1)
-        membership.save()
-        return super(CreateTeam, self).form_valid(form)
+        return super(CreateTask, self).form_valid(form)
 
 
 class DeleteTask(LoginRequiredMixin, DeleteView):
     pass
 
 
+# This view is only for employee.
 class UpdateTask(LoginRequiredMixin, UpdateView):
-    pass
+    template = "tasks/update_task.html"
+
+    def get(self, request, pk):        
+        task = get_object_or_404(Task, id=pk, worker=request.user)
+        form = TaskEmployeeUpdateForm(instance=task)
+        ctx = {
+            'form': form, 
+            'title': task.title, 
+            'description': task.description, 
+            'priority': task.get_priority_display(),
+            'team': task.team, 
+            'due_date': task.due_date, 
+            'manager': task.assigner,
+            'pk': pk
+            }
+        return render(request, self.template, ctx)
+    
+    def post(self, request, pk=None):    
+        task = get_object_or_404(Task, id=pk, owner=self.request.user)
+        form = TaskEmployeeUpdateForm(request.POST, request.FILES or None, instance=task)
+
+        if not form.is_valid():
+            ctx = {
+                'form': form, 
+                'title': task.title, 
+                'description': task.description, 
+                'priority': task.get_priority_display(),
+                'team': task.team, 
+                'due_date': task.due_date, 
+                'manager': task.assigner,
+                'pk': pk
+                }
+            return render(request, self.template, ctx)
+
+        task.save()
+        success_url = reverse_lazy('task_detail', args=[pk])
+        
+        return redirect(success_url)
 
 
+# This view is only for manager
+class EditTask(LoginRequiredMixin, UpdateView):
+    template = "tasks/edit_task.html"
+
+    def get(self, request, pk):        
+        task = get_object_or_404(Task, id=pk, assigner=request.user)
+        form = TaskEmployeeUpdateForm(instance=task)
+        ctx = {
+            'form': form, 
+            'title': task.title, 
+            'team': task.team, 
+            'progress': task.get_progress_display(),
+            'employee': task.worker,
+            'pk': pk
+            }
+        return render(request, self.template, ctx)
+    
+    def post(self, request, pk=None):    
+        task = get_object_or_404(Task, id=pk, owner=self.request.user)
+        form = TaskEmployeeUpdateForm(request.POST, request.FILES or None, instance=task)
+
+        if not form.is_valid():
+            ctx = {
+                'form': form, 
+                'title': task.title, 
+                'team': task.team, 
+                'progress': task.get_progress_display(),
+                'employee': task.worker,
+                'pk': pk
+                }
+            return render(request, self.template, ctx)
+
+        task.save()
+        success_url = reverse_lazy('task_detail', args=[pk])
+        
+        return redirect(success_url)
+
+
+class DashboardView(LoginRequiredMixin, View):
+    template = "tasks/dashboard.html"    
+    incomplete = get_incomplete_task_choices()
+
+    def get(self, request, pk):        
+        userProfile_id = UserProfile.objects.get(user=request.user)
+        manager_task_list = Task.objects.filter(assigner=userProfile_id)
+        assigned_task_list = Task.objects.filter(worker=userProfile_id)
+        ctx = {
+            "manager_task_list": manager_task_list,
+            "assigned_task_list": assigned_task_list
+        }
+        return render(request, self.template, ctx)

@@ -1,6 +1,7 @@
 # This file saves all helper functions of the project
 
-from django.contrib.auth.models import User, Task
+from django.contrib.auth.models import User
+from .models import Task
 
 def get_user_name_display(user):
     # this function return a formatted display of user's name and username

@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
 # from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import UserProfile, Gender, Title, Team
+from .models import UserProfile, Gender, Title, Team, Task
 
 # Register your models here.
 # class CustomUserAdmin(UserAdmin):
@@ -46,8 +46,16 @@ class TeamAdmin(admin.ModelAdmin):
         queryset = super(TeamAdmin, self).get_queryset(request)        
         return queryset
 
+class TaskAdmin(admin.ModelAdmin):
+    list_display = ('title', 'description', 'results', 'progress', 'assigner_tag', 'worker_tag', 'assigner', 'worker', 'priority', 'team', 'due_date')
+    readonly_fields = ['due_date']
+    def get_queryset(self, request):
+        queryset = super(TaskAdmin, self).get_queryset(request)        
+        return queryset
+
 
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Gender, GenderAdmin)
 admin.site.register(Title, TitleAdmin)
 admin.site.register(Team, TeamAdmin)
+admin.site.register(Task, TaskAdmin)

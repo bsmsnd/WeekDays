@@ -117,4 +117,4 @@ class TaskEmployeeUpdateForm(forms.ModelForm):
 class TaskManagerEditForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['description', 'priority']
+        fields = ['description', 'priority', 'due_date']

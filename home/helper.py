@@ -8,9 +8,10 @@ def get_user_name_display(user):
     # :param: user: an instance of user
     # :return: formatted display, last_name first_name (username)
     # e.g. Jack Chen (jack123)
-
-    return user.last_name + " " + user.first_name + " " + "(%s)" % user.username
-
+    print(user)
+    print(user.first_name + " " + user.last_name + " " + "(%s)" % user.username)
+    return user.first_name + " " + user.last_name + " " + "(%s)" % user.username
+    
 def get_incomplete_task_choices():
     progress_to_choice = Task.PROGRESS_CHOICES
     return list(dict(progress_to_choice).keys())[:-1]

@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import *
 from .models import *
 from .owner import *
-from .helper import get_incomplete_task_choices
+from .helper import get_incomplete_task_choices, get_user_name_display
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm, UserCreationForm
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.contrib import messages
@@ -192,46 +192,22 @@ class PromoteMember(LoginRequiredMixin, UpdateView):
     pass
 
 
-# class DeleteMember(LoginRequiredMixin,DeleteView):
-#     # model = Membership
-#     # template_name = "teams/delete_member.html"
+# def promote_member(request, pk, pk2):
+#     userobj= get_object_or_404(UserProfile, id = pk2)
+#     team = Team.objects.get(id=pk)
+
+#     team.team_members.remove(userobj)
+#  managers_profile_id = Membership.objects.filter(role=1, team=team).values('user')
+#     return redirect(reverse('team_detail', args=[pk]))
 
 
-
-
-    # model = Team
-    # success_message = "Membership deleted successfully"
-    # success_url = reverse_lazy('team_list')
-    # context_object_name = 'teams'
-    # template_name = "teams/delete_member.html"
-
-    # def dispatch(self, *args, **kwargs):
-    #     return super().dispatch(*args, **kwargs)
-
-    # def delete(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-
-    #     Membership.objects\
-    #         .filter(team_members=self.object.team_members)\
-    #         .delete()
-
-    #     self.object.delete()
-
-    #     return HttpResponseRedirect(self.get_success_url())
-    
-
-
-def remove_member(request, pk,pk2):
+def remove_member(request, pk, pk2):
     userobj= get_object_or_404(UserProfile, id = pk2)
     team = Team.objects.get(id=pk)
 
     team.team_members.remove(userobj)
 
     return redirect(reverse('team_detail', args=[pk]))
-
-  
-
-
 
 
 class TransferOwnership(LoginRequiredMixin, UpdateView):
@@ -273,13 +249,14 @@ class CreateTask(LoginRequiredMixin, CreateView):
     model = Task
     fields = ['title', 'description', 'worker', 'priority', 'team', 'due_date']
 
-    def form_valid(self, form):        
+
+    def form_valid(self, form):
+        # validation
+        task = form.save(commit=False)
+        task.assigner = self.request.user
         print('form_valid called')
-        task = form.save(commit=False)        
         task.save()
-
         return super(CreateTask, self).form_valid(form)
-
 
 class DeleteTask(LoginRequiredMixin, DeleteView):
     pass
@@ -299,13 +276,13 @@ class UpdateTask(LoginRequiredMixin, UpdateView):
             'priority': task.get_priority_display(),
             'team': task.team, 
             'due_date': task.due_date, 
-            'manager': task.assigner,
+            'manager': get_user_name_display(task.assigner),
             'pk': pk
             }
         return render(request, self.template, ctx)
     
     def post(self, request, pk=None):    
-        task = get_object_or_404(Task, id=pk, owner=self.request.user)
+        task = get_object_or_404(Task, id=pk, worker=self.request.user)
         form = TaskEmployeeUpdateForm(request.POST, request.FILES or None, instance=task)
 
         if not form.is_valid():
@@ -316,7 +293,7 @@ class UpdateTask(LoginRequiredMixin, UpdateView):
                 'priority': task.get_priority_display(),
                 'team': task.team, 
                 'due_date': task.due_date, 
-                'manager': task.assigner,
+                'manager': get_user_name_display(task.assigner),
                 'pk': pk
                 }
             return render(request, self.template, ctx)
@@ -333,20 +310,20 @@ class EditTask(LoginRequiredMixin, UpdateView):
 
     def get(self, request, pk):        
         task = get_object_or_404(Task, id=pk, assigner=request.user)
-        form = TaskEmployeeUpdateForm(instance=task)
+        form = TaskManagerEditForm(instance=task)
         ctx = {
             'form': form, 
             'title': task.title, 
             'team': task.team, 
             'progress': task.get_progress_display(),
-            'employee': task.worker,
+            'employee': get_user_name_display(task.worker),
             'pk': pk
             }
         return render(request, self.template, ctx)
     
     def post(self, request, pk=None):    
-        task = get_object_or_404(Task, id=pk, owner=self.request.user)
-        form = TaskEmployeeUpdateForm(request.POST, request.FILES or None, instance=task)
+        task = get_object_or_404(Task, id=pk, assigner=self.request.user)
+        form = TaskManagerEditForm(request.POST, request.FILES or None, instance=task)
 
         if not form.is_valid():
             ctx = {
@@ -354,7 +331,7 @@ class EditTask(LoginRequiredMixin, UpdateView):
                 'title': task.title, 
                 'team': task.team, 
                 'progress': task.get_progress_display(),
-                'employee': task.worker,
+                'employee': get_user_name_display(task.worker),
                 'pk': pk
                 }
             return render(request, self.template, ctx)
@@ -366,13 +343,13 @@ class EditTask(LoginRequiredMixin, UpdateView):
 
 
 class DashboardView(LoginRequiredMixin, View):
-    template = "tasks/dashboard.html"    
+    template = "tasks/dashboard.html"
     incomplete = get_incomplete_task_choices()
 
-    def get(self, request, pk):        
-        userProfile_id = UserProfile.objects.get(user=request.user)
-        manager_task_list = Task.objects.filter(assigner=userProfile_id)
-        assigned_task_list = Task.objects.filter(worker=userProfile_id)
+    def get(self, request):        
+        # userProfile_id = UserProfile.objects.get(user=request.user)
+        manager_task_list = Task.objects.filter(assigner=request.user)
+        assigned_task_list = Task.objects.filter(worker=request.user)
         ctx = {
             "manager_task_list": manager_task_list,
             "assigned_task_list": assigned_task_list

@@ -16,6 +16,8 @@
     <p>You do not have any ongoing tasks managed. </p> 
 {% endif %}
 
+<p><input class="btn btn-success" onclick="window.location.href = '{% url 'create_task' %}';" value="Create a task"></p>
+
 <h3>Tasks TODO</h3>
 {% if assigned_task_list %}
     {% for task in assigned_task_list %}

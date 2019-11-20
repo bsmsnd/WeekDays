@@ -148,7 +148,7 @@ class Task(models.Model):
         choices=PRIORITY_CHOICES, default=0,        
     )
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    due_date = models.DateTimeField(auto_now=True)
+    due_date = models.DateTimeField()
 
     def __str__(self):
         return self.title

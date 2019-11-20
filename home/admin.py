@@ -48,7 +48,7 @@ class TeamAdmin(admin.ModelAdmin):
 
 class TaskAdmin(admin.ModelAdmin):
     list_display = ('title', 'description', 'results', 'progress', 'assigner_tag', 'worker_tag', 'assigner', 'worker', 'priority', 'team', 'due_date')
-    readonly_fields = ['due_date']
+    # readonly_fields = ['due_date']
     def get_queryset(self, request):
         queryset = super(TaskAdmin, self).get_queryset(request)        
         return queryset

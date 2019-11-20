@@ -7,7 +7,7 @@
 
 {% block body %}
 <div class="container">
-    <h2>Task Detail {{title}}</h2>
+    <h2>Task: {{title}}</h2>
 
     <h3>Task Description</h3>
     <p>{{description}}</p>
@@ -16,14 +16,14 @@
     <h3>Due: {{due_date}}</h3>
     {% comment %} <ul> {% endcomment %}    
     {% if role == 1 %}
-    <p>The task was assigned to {{associate_user.display_name}}</p>
+    <h4>The task was assigned to {{associate_user}}</h4>
     {% else %}
-    <p>The task was assigned by {{associate_user.display_name}}</p>
+    <h4>The task was assigned by {{associate_user}}</h4>
     {% endif %}
-     
-     <h3>Results</h3>
-     <p>Current Progress: {{progress}} </p>
-     <p>{{results}}</p>
+    
+    <h3>Results</h3>
+    <h4>Current Progress: {{progress}} </h4>
+    <p>{{results}}</p>
      
     <!-- {% if user.userprofile.image %}
     <img src="{{ user.userprofile.image.url }}" width="240">

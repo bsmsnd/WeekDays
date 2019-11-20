@@ -49,14 +49,15 @@
     <option value="{{user.id}}">{{ user.diaplay_name_and_email }}</option>
     {% endfor %}
     </select>
-    <input type="submit">
+    <input type="submit" value="Add Member">
     </form>
-
-
-    <input type="text" id="add_member" name="add_member"  placeholder="add a member">
-    <button onclick="addMember(document.getElementById('add_member').value);">(Test)Add Team Member</button>
     
     <button onclick="window.location.href = '{% url 'team_remove' team.id %}';">Delete Team</button>
+
+    {% comment %} <input type="text" id="add_member" name="add_member"  placeholder="add a member">
+    <button onclick="addMember(document.getElementById('add_member').value);">(Test)Add Team Member</button>
+    {% endcomment %}
+
     {% endif %}
 </div>
 

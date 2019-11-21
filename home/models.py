@@ -74,6 +74,7 @@ class Team(models.Model):
     summary = models.TextField(max_length=1000, help_text='Enter a brief summary of the team', null=True, blank=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
     team_members = models.ManyToManyField(UserProfile, through='Membership', related_name='team_members')
+    
     def __str__(self):
         return self.name
 
@@ -122,15 +123,15 @@ class Task(models.Model):
     )
 
     PROGRESS_CHOICES = (
-        (0, 'Not started'),
-        (1, '~25%'),
-        (2, '~50%'),
-        (3, '~75%'),
-        (4, 'Completed')
+        (1, 'Not started'),
+        (2, '~25%'),
+        (3, '~50%'),
+        (4, '~75%'),
+        (5, 'Completed')
     )
 
     progress = models.PositiveSmallIntegerField(
-        choices=PROGRESS_CHOICES, default=0,        
+        choices=PROGRESS_CHOICES, default=1,        
     )
 
     assigner_tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='assigner_tag')
@@ -139,16 +140,16 @@ class Task(models.Model):
     worker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='employee')
     
     PRIORITY_CHOICES = (
-        (0, 'Low'),
-        (1, 'Medium'),
-        (2, 'High'),
+        (1, 'Low'),
+        (2, 'Medium'),
+        (3, 'High'),
     )
     
     priority = models.PositiveSmallIntegerField(
-        choices=PRIORITY_CHOICES, default=0,        
+        choices=PRIORITY_CHOICES, default=1,        
     )
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    due_date = models.DateTimeField()
+    due_date = models.DateField()
 
     def __str__(self):
         return self.title

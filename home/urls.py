@@ -41,8 +41,10 @@ urlpatterns += [
     path('tasks/create', CreateTask.as_view(success_url=reverse_lazy('dashboard')), name='create_task'),
     path('tasks/<int:pk>/edit', EditTask.as_view(),name='edit_task'),
     path('tasks/<int:pk>/update', UpdateTask.as_view(),name='update_task'),  # TODO: need to specify task ID somewhere    
-    path('tasks/delete', CreateTask.as_view(success_url=reverse_lazy('dashboard')),name='delete_task'),
-    path('dashboard', DashboardView.as_view(), name='dashboard')
+    path('tasks/<int:pk>/delete', DeleteTask.as_view(success_url=reverse_lazy('dashboard')),name='delete_task'),
+    path('dashboard', DashboardView.as_view(), name='dashboard'),
+    path('test', TestPreCreateTask.as_view(), name='pre_create_task'),
+    path('test/<int:pk>', TestCreateTask.as_view(), name='create_task_with_team_id'),
 ]
 
 # Teams
@@ -51,8 +53,9 @@ urlpatterns += [
     path('teams/<int:pk>', TeamDetailView.as_view(), name='team_detail'),
     path('teams/<int:pk>/update', UpdateTeam.as_view(), name='team_update'),
     path('teams/<int:pk>/addMember',InviteMember.as_view(), name="add_user"),
-    #url(r'^teams/(?P<pk>[0-9]+)/promoteMember/(?P<pk2>[0-9]+)$', promote_member, name='promote_member'),
+    url(r'^teams/(?P<pk>[0-9]+)/promoteMember/(?P<pk2>[0-9]+)$', promote_member, name='promote_member'),
     url(r'^teams/(?P<pk>[0-9]+)/deleteMember/(?P<pk2>[0-9]+)$', remove_member, name='delete_member'),
+    url(r'^teams/(?P<pk>[0-9]+)/transferOwner/(?P<pk2>[0-9]+)$', transfer_owner, name='transfer_owner'),
     
     path('teams/create', CreateTeam.as_view(success_url=reverse_lazy('team_list')), name='team_create'),
 

@@ -14,7 +14,11 @@
     <ul>
     {% for manager in managers %}
     <!-- <li>{{manager.display_name}}</li> -->
-    <li><a href="{% url 'view_profile_with_pk' manager.id%}">{{manager.display_name}}</a></li>
+    <li><a href="{% url 'view_profile_with_pk' manager.id%}">{{manager.display_name}}</a>
+    <!-- {% if request.user == team.owner %} -->
+          <a href="#" onclick="confirmTransfer('{% url 'transfer_owner' team.id manager.id %}'); return false;"><i class="fa fa-pencil"></i></a> 
+    <!-- {% endif %} -->
+</li>
     {% endfor %}
     </ul>
 
@@ -26,6 +30,8 @@
         <li><a href="{% url 'view_profile_with_pk' employee.id%}">{{employee.display_name}}</a> 
         {% if user == team.owner %}
             <a href="#" onclick="confirmDelete('{% url 'delete_member' team.id employee.id %}'); return false;"><i class="fa fa-trash"></i></a> 
+            <a href="#" onclick="confirmPromote('{% url 'promote_member' team.id employee.id %}'); return false;"><i class="far fa-arrow-alt-circle-up"></i></a> 
+            
             {% comment %} <a href="{% url 'delete_member' team.id employee.id%}"><i class="fa fa-trash"></i></a> {% endcomment %}
         {% endif %}
         </li>        
@@ -39,6 +45,10 @@
     {% endif %} -->
 
     {% comment %} dropdown {% endcomment %}
+
+    {% if role == 1 %}
+    <p><input class="btn btn-success" onclick="window.location.href = '{% url 'create_task_with_team_id' team.id %}';" value="Create a task"></p>
+    {% endif %}
     
     {% if user == team.owner %}
     <form action="{% url 'add_user' team.id %}" method="post">
@@ -93,6 +103,22 @@ function confirmDelete(url){
         window.location.href = url;
     }    
 }
+</script>
+<script>
+    function confirmPromote(url){    
+        if (confirm("Are you sure you want to Promote the member?")){
+            console.log(url)
+            window.location.href = url;
+        }    
+    }
+</script>
+<script>
+    function confirmTransfer(url){    
+        if (confirm("Are you sure you want to tranfer the ownership to this member?")){
+            console.log(url)
+            window.location.href = url;
+        }    
+    }
 </script>
 
 {% if messages %}

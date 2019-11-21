@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+<title>Create a Task: Team Selection</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+<h1>Choose Your Team</h1>
+<h3>Please select a team that you are managing.</h3>
+<ul>
+{% for team in teams %}
+<li><a href="{% url 'create_task_with_team_id' team.id %}">{{team}}</a>
+</li>
+{% endfor %}
+</ul>
+</div>
+{% endblock %}

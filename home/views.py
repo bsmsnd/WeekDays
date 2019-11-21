@@ -11,8 +11,10 @@ from .owner import *
 from .helper import get_incomplete_task_choices, get_user_name_display
 from django.contrib.auth.forms import UserChangeForm, PasswordChangeForm, UserCreationForm
 from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.http.response import HttpResponseNotFound, HttpResponseForbidden
 from django.contrib import messages
 from django.shortcuts import get_list_or_404, get_object_or_404
+from django.utils.dateparse import parse_date
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
@@ -119,6 +121,7 @@ class TeamDetailView(LoginRequiredMixin, View):
     template_name = "teams/team_detail.html"
 
     def get(self, request, pk) :
+        user_profile = UserProfile.objects.get(user=request.user)
         team = Team.objects.get(id=pk)
         #comments = Comment.objects.filter(ad=ad).order_by('-updated_at')
         #comment_form = CommentForm()
@@ -129,7 +132,8 @@ class TeamDetailView(LoginRequiredMixin, View):
         employee_profile = UserProfile.objects.filter(id__in=employee_profile_id)
         ulist = UserProfile.objects.all()
 
-        context = { 'team':team, 'summary': team.summary, 'managers' : manager_profile, 'employees': employee_profile, 'ulist': ulist}
+        role = Membership.objects.get(team=team, user=user_profile).role
+        context = { 'team':team, 'summary': team.summary, 'managers' : manager_profile, 'employees': employee_profile, 'ulist': ulist, 'role': role}
         return render(request, self.template_name, context)
 
 
@@ -180,7 +184,7 @@ class InviteMember(LoginRequiredMixin, View):
              
         if member_exist:
             messages.error(request, 'This user is alreay in the team')
-            pass
+            return redirect(reverse("team_detail", args=[pk]))
 
         member = Membership(user=userProfile, team=team)
         member.save()
@@ -192,13 +196,16 @@ class PromoteMember(LoginRequiredMixin, UpdateView):
     pass
 
 
-# def promote_member(request, pk, pk2):
-#     userobj= get_object_or_404(UserProfile, id = pk2)
-#     team = Team.objects.get(id=pk)
+def promote_member(request, pk, pk2):
+    userobj= UserProfile.objects.get(id = pk2)
+    
+    team_num = Team.objects.get(id=pk)
+    memberrole = Membership.objects.get(user=userobj, team=team_num)
+    print(memberrole)
+    memberrole.role= 1
+    memberrole.save()
+    return redirect(reverse('team_detail', args=[pk]))
 
-#     team.team_members.remove(userobj)
-#  managers_profile_id = Membership.objects.filter(role=1, team=team).values('user')
-#     return redirect(reverse('team_detail', args=[pk]))
 
 
 def remove_member(request, pk, pk2):
@@ -206,7 +213,20 @@ def remove_member(request, pk, pk2):
     team = Team.objects.get(id=pk)
 
     team.team_members.remove(userobj)
+    team.save()
+    return redirect(reverse('team_detail', args=[pk]))
 
+
+def transfer_owner(request, pk, pk2):
+    userobj= User.objects.get(id = pk2)
+    team = Team.objects.get(id=pk)
+    if team.owner != request.user:
+        messages.error(request, 'You are not the owner')
+        return redirect(reverse("team_detail", args=[pk]))
+    else:
+        team.owner = userobj
+        print(team.owner)
+    team.save()
     return redirect(reverse('team_detail', args=[pk]))
 
 
@@ -258,8 +278,50 @@ class CreateTask(LoginRequiredMixin, CreateView):
         task.save()
         return super(CreateTask, self).form_valid(form)
 
+class TestPreCreateTask(LoginRequiredMixin, View):
+    template_name = 'tasks/precreate_choose_team.html'
+
+    def get(self, request):
+        userProfile = UserProfile.objects.get(user=request.user)
+        managerTeams_id = Membership.objects.filter(user=userProfile, role=Membership.MANAGER).values('team')
+        teams = Team.objects.filter(id__in=managerTeams_id)
+        ctx = {'teams': teams}
+        return render(request, self.template_name, ctx)
+
+
+class TestCreateTask(LoginRequiredMixin, View):
+    template_name = 'tasks/create_task.html'
+    
+    def get(self, request, pk):
+        team = get_object_or_404(Team, id=pk)
+        userProfile = UserProfile.objects.get(user=request.user)
+        membership = get_object_or_404(Membership, user=userProfile, team=team)
+        
+        # not a member of the team, or the user is not a manager
+        if not membership or membership.role == Membership.EMPLOYEE:
+            return HttpResponseForbidden("You do not have access to the page")
+        
+        ulist = team.team_members.all()
+        ctx = {'team': team, 'ulist': ulist}
+        return render(request, self.template_name, ctx)
+
+    def post(self, request, pk):
+        team = get_object_or_404(Team, id=pk)
+        title = request.POST.get("title")
+        desc = request.POST.get("request")
+        employee_id = request.POST.get("employee")
+        employee = get_object_or_404(UserProfile, id=employee_id).user
+        priority = request.POST.get("priority")
+        due_date = parse_date(request.POST.get("due_date"))
+        
+        task = Task(title=title, description=desc, assigner=request.user, worker=employee, priority=priority, team=team, due_date=due_date)
+        task.save()
+        return redirect('dashboard')
+
+
 class DeleteTask(LoginRequiredMixin, DeleteView):
-    pass
+    model = Task
+    template_name = "tasks/delete_task.html"
 
 
 # This view is only for employee.

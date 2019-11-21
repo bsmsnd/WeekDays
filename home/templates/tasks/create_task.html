@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+<title>Create a task</title>
+{% endblock %}
+
+{% block body%}
+<div class="container">
+<p>
+    <form name="addTaskForm" action="" onsubmit="return validateForm();" method="post">
+    {% csrf_token %}
+     <h2>You are creating a task for team: {{ team }} <h4><a href="{% url 'pre_create_task' %}">Not this team?</a></h4></h2>
+    
+    <p><b>Title</b></p>
+    <input type="text" name="title" required>
+    
+    <p><b>Description</b></p>
+    <p>
+    <textarea name="description" rows="5" cols="50" wrap="soft">    
+    </textarea>
+    </p>
+
+    <p><b>Task assigned to</b>    
+    <select name="employee" required>
+        <option value="0">-- Please select --</option>
+        {% for user in ulist %}
+        <option value="{{user.id}}">{{ user.diaplay_name_and_email }}</option>
+        {% endfor %}        
+    </select>
+    </p>
+
+    <p><b>Task Priority</b></p>
+    <select name="priority">        
+        <option value="1">Low</option>
+        <option value="2">Medium</option>
+        <option value="3">High</option>        
+    </select>
+    
+    <p><b>Due Date</b></p>
+    <input type="date" name="due_date" required>
+    <input type="submit" value="Submit">
+
+    </form>        
+</p>
+</div>
+
+<script type="text/javascript">
+    function validateForm(){
+        // Validate entries and raise alerts if necessary
+        
+        // 1. Title should greater than 2 characters
+        var title = document.forms["addTaskForm"]["title"].value;
+        console.log(title);
+        console.log(title.length);
+        if (title.length < 2)
+        {
+            alert("Title too short: Title must be greater than 2 characters");
+            return false;
+        }
+        
+        // 2. Priority
+        var priority = document.forms["addTaskForm"]["priority"].value;
+        console.log(priority);
+        if (priority == 0)
+        {
+            alert("Please select: Priority");
+            return false;
+        }
+        
+        // 3. Member
+        /*
+        if (document.forms["addTaskForm"][employee].value == 0)
+        {
+            alert("Please choose a member.")
+            return false;
+        }
+        */
+
+        // 4. Date
+        var today = new Date();
+        var today_day = parseInt(String(today.getDate()).padStart(2, '0'));
+        var today_month = parseInt(String(today.getMonth() + 1).padStart(2, '0')); //January is 0!
+        var today_year = today.getFullYear();
+        
+        console.log(today_year, today_month, today_day);
+
+        var arrChooseDate = document.forms["addTaskForm"]["due_date"].value.split("-");
+        
+        var chooseYear = parseInt(arrChooseDate[0]);
+        var chooseMonth = parseInt(arrChooseDate[1]);
+        var chooseDay = parseInt(arrChooseDate[2]);
+
+        console.log(chooseYear,chooseMonth, chooseDay);
+
+        if (chooseYear < today_year || (chooseYear == today_year && chooseMonth < today_month) || (chooseYear == today_year && chooseMonth == today_month && chooseDay < today_day))
+        {
+            alert("Please select a day after today.");
+            return false;
+        }
+
+        return true;
+        
+    }
+</script>
+{% endblock %}

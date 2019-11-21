@@ -30,8 +30,11 @@
     {% endif %} -->
     {% if role == 1 %}
     <button onclick="window.location.href = '{% url 'edit_task' task_id %}';">Edit Task</button>
+    <button onclick="window.location.href = '{% url 'delete_task' task_id %}';">Delete Task</button>
+
     {% else %}
     <button onclick="window.location.href = '{% url 'update_task' task_id %}';">Update Task</button>
+
     {% endif %}
 
 </div>

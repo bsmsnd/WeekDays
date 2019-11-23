@@ -101,7 +101,7 @@ class Membership(models.Model):
 class Tag(models.Model):
     name = models.CharField(
         max_length=200,
-        validators=[MinLengthValidator(2, "Title must be greater than 2 characters")]
+        validators=[MinLengthValidator(2, "Tag must be greater than 2 characters")]
     )
 
     def __str__(self):
@@ -155,3 +155,59 @@ class Task(models.Model):
         return self.title
 
 
+class Event(models.Model):
+    title = models.CharField(
+        max_length=200,
+        validators=[MinLengthValidator(2, "Title must be greater than 2 characters")]
+    )
+
+    description = models.CharField(
+        max_length=1000,        
+        null=True, blank=True     
+    )
+    starttime = models.DateField()
+    endtime = models.DateField()
+    
+    location = models.CharField(
+        max_length=1000,        
+        null=True, blank=True     
+    )
+
+    host = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.title + "hosted by %s %s (%s)" % (str(self.host.last_name), str(self.host.first_name), str(host.username))
+
+
+class Invitee(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "User " + str(self.user.id) + " <--> event" + str(self.event.id)
+
+
+class Messages(models.Model):
+
+    title = models.CharField(
+        max_length=200,
+        validators=[MinLengthValidator(2, "Title must be greater than 2 characters")]
+    )
+    body = models.CharField(
+        max_length=1000,        
+        null=True, blank=True     
+    )
+
+    MESSAGE_STATUS = (
+        (1, 'Not Read'),
+        (2, 'Read'),     
+    )
+
+    progress = models.PositiveSmallIntegerField(
+        choices=MESSAGE_STATUS, default=1,        
+    )
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver')
+
+    def __str__(self):
+        return self.title + " (from %s)" % str(self.user.username)

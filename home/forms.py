@@ -111,10 +111,10 @@ class CustomUserCreationForm(UserCreationForm):
 class TaskEmployeeUpdateForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['progress', 'results']
+        fields = ['progress', 'worker_tag', 'results']
 
 
 class TaskManagerEditForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['description', 'priority', 'due_date']
+        fields = ['description', 'priority', 'assigner_tag', 'due_date']

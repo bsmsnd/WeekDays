@@ -36,10 +36,15 @@
         <option value="2">Medium</option>
         <option value="3">High</option>        
     </select>
+
+    <p><b>Tag</b></p>
+        <input type="text" name="tag">
     
     <p><b>Due Date</b></p>
     <input type="date" name="due_date" required>
-    <input type="submit" value="Submit">
+    
+    <p></p>
+    <p><input type="submit" value="Submit"></p>
 
     </form>        
 </p>
@@ -48,7 +53,7 @@
 <script type="text/javascript">
     function validateForm(){
         // Validate entries and raise alerts if necessary
-        
+        alert("Pause");
         // 1. Title should greater than 2 characters
         var title = document.forms["addTaskForm"]["title"].value;
         console.log(title);
@@ -69,13 +74,21 @@
         }
         
         // 3. Member
-        /*
-        if (document.forms["addTaskForm"][employee].value == 0)
+        if (document.forms["addTaskForm"]["employee"].value == 0)
         {
             alert("Please choose a member.")
             return false;
         }
-        */
+
+        // Tag
+        var tag = document.forms["addTaskForm"]["tag"].value;
+        console.log(tag);
+        console.log(tag.length);
+        if (tag.length < 2)
+        {
+            alert("Tag too short: Tag must be greater than 2 characters");
+            return false;
+        }
 
         // 4. Date
         var today = new Date();

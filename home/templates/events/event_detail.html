@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+<title>Event Detail</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <h2>Event: {{title}}</h2>
+
+    <h3>Event Description</h3>
+    <p>{{description}}</p>
+    
+    <h3>StartTime: {{starttime}}</h3>
+    <h3>EndTime: {{endtime}}</h3>
+    <h3>Location: {{location}}</h3>
+    <h3>Host: {{host}}</h3>
+
+    <!-- {% if user.userprofile.image %}
+    <img src="{{ user.userprofile.image.url }}" width="240">
+    {% endif %} -->
+    {% if host == user %}
+    <button onclick="window.location.href = '{% url 'event_update' event_id %}';">Edit Event</button>
+    <button onclick="window.location.href = '{% url 'event_delete' event_id %}';">Delete Event</button>
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -56,11 +56,17 @@ urlpatterns += [
     url(r'^teams/(?P<pk>[0-9]+)/promoteMember/(?P<pk2>[0-9]+)$', promote_member, name='promote_member'),
     url(r'^teams/(?P<pk>[0-9]+)/deleteMember/(?P<pk2>[0-9]+)$', remove_member, name='delete_member'),
     url(r'^teams/(?P<pk>[0-9]+)/transferOwner/(?P<pk2>[0-9]+)$', transfer_owner, name='transfer_owner'),
-    
     path('teams/create', CreateTeam.as_view(success_url=reverse_lazy('team_list')), name='team_create'),
-
     path('teams/<int:pk>/remove', RemoveTeam.as_view(success_url=reverse_lazy('team_list')), name='team_remove'),
 
     
 ]
 
+
+# Events
+urlpatterns += [
+    path('events/create', CreateEventView.as_view(), name="create_event"),
+    path('events/<int:pk>', EventDetailView.as_view(), name="event_detail"), 
+    path('events/<int:pk>/update', EventUpdateView.as_view(), name="event_update"),
+    path('events/<int:pk>/delete', EventDeleteView.as_view(success_url=reverse_lazy('dashboard')), name="event_delete"), 
+]

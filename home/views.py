@@ -1,5 +1,5 @@
-from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy, reverse
 from django.views import View, generic
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -125,10 +125,10 @@ class TeamDetailView(LoginRequiredMixin, View):
         team = Team.objects.get(id=pk)
         #comments = Comment.objects.filter(ad=ad).order_by('-updated_at')
         #comment_form = CommentForm()
-        managers_profile_id = Membership.objects.filter(role=1, team=team).values('user')
+        managers_profile_id = Membership.objects.filter(role=Membership.MANAGER, team=team).values('user')
         manager_profile = UserProfile.objects.filter(id__in=managers_profile_id)
 
-        employee_profile_id = Membership.objects.filter(role=100, team=team).values('user')
+        employee_profile_id = Membership.objects.filter(role=Membership.EMPLOYEE, team=team).values('user')
         employee_profile = UserProfile.objects.filter(id__in=employee_profile_id)
         ulist = UserProfile.objects.all()
 
@@ -192,10 +192,6 @@ class InviteMember(LoginRequiredMixin, View):
         return redirect(reverse("team_detail", args=[pk]))
     
 
-class PromoteMember(LoginRequiredMixin, UpdateView):
-    pass
-
-
 def promote_member(request, pk, pk2):
     userobj= UserProfile.objects.get(id = pk2)
     
@@ -256,9 +252,11 @@ class TaskDetail(LoginRequiredMixin, View):
         if (task.assigner == user):
             context["associate_user"] = get_user_name_display(task.worker)
             context["role"] = 1
+            context["tag"] = task.assigner_tag
         elif (task.worker == user):
             context["associate_user"] = get_user_name_display(task.assigner)
             context["role"] = 100
+            context["tag"] = task.worker_tag
         else:
             return HttpResponseNotFound("Task not found!")
         
@@ -313,8 +311,21 @@ class TestCreateTask(LoginRequiredMixin, View):
         employee = get_object_or_404(UserProfile, id=employee_id).user
         priority = request.POST.get("priority")
         due_date = parse_date(request.POST.get("due_date"))
-        
-        task = Task(title=title, description=desc, assigner=request.user, worker=employee, priority=priority, team=team, due_date=due_date)
+
+        tag_text = request.POST.get("tag")
+        if len(tag_text) == 0:
+            task = Task(title=title, description=desc, assigner=request.user, worker=employee, priority=priority, team=team, due_date=due_date)
+        else:
+            tag_qs = Tag.objects.filter(name=tag_text)
+            # tag = get_object_or_404(Tag, name=tag_text)
+            if tag_qs:
+                tag = tag_qs[0]
+            else:
+                tag = Tag(name=tag_text)
+                tag.save()            
+            
+            print(tag.id)
+            task = Task(title=title, description=desc, assigner=request.user, worker=employee, priority=priority, team=team, due_date=due_date, assigner_tag=tag)
         task.save()
         return redirect('dashboard')
 
@@ -412,8 +423,70 @@ class DashboardView(LoginRequiredMixin, View):
         # userProfile_id = UserProfile.objects.get(user=request.user)
         manager_task_list = Task.objects.filter(assigner=request.user)
         assigned_task_list = Task.objects.filter(worker=request.user)
+        event_ids = Invitee.objects.filter(user=request.user).values('event')
+        event_list = Event.objects.filter(id__in=event_ids)
         ctx = {
             "manager_task_list": manager_task_list,
-            "assigned_task_list": assigned_task_list
+            "assigned_task_list": assigned_task_list,
+            'event_list': event_list,
         }
         return render(request, self.template, ctx)
+
+
+class CreateEventView(LoginRequiredMixin, View):
+    template = "events/create_event.html"
+    def get(self, request):
+        return render(request, self.template)
+
+    def post(self, request):
+        title = request.POST.get("title")
+        desc = request.POST.get("description")
+        starttime = request.POST.get("start_date")
+        endtime = request.POST.get("end_date")
+        location = request.POST.get("location")
+        user = request.user
+
+        event = Event(title=title, description=desc, starttime=starttime, endtime=endtime, location=location, host=user)
+        event.save()
+
+        invitee = Invitee(event=event, user=user)
+        invitee.save()
+
+        return redirect("dashboard")
+
+
+class EventDetailView(LoginRequiredMixin, View):
+    template = "events/event_detail.html"
+
+    def get(self, request, pk) :
+        event = Event.objects.get(id=pk)
+        user = request.user
+        context = {
+            "title": event.title, 
+            "description": event.description,
+            "starttime": event.starttime,
+            "endtime": event.endtime,
+            "host": event.host,
+            "location": event.location
+        }
+        context["event_id"] = pk
+        # if (event.host == user):
+        #     context["associate_user"] = get_user_name_display(task.worker)
+        #     context["role"] = 1
+        #     context["tag"] = task.assigner_tag
+        # elif (task.worker == user):
+        #     context["associate_user"] = get_user_name_display(task.assigner)
+        #     context["role"] = 100
+        #     context["tag"] = task.worker_tag
+        return render(request,self.template, context)
+        
+
+class EventUpdateView(LoginRequiredMixin, UpdateView):
+    model = Event
+    fields = ['title', 'description', 'starttime', 'endtime', 'location']
+    template_name = 'events/update_event.html'
+    success_url = reverse_lazy('dashboard')
+
+class EventDeleteView(LoginRequiredMixin, DeleteView):
+    model = Event
+    template_name = "events/delete_event.html"

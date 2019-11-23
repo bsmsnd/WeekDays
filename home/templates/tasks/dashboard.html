@@ -27,5 +27,16 @@
     <p>You do not have any active tasks to work on. </p> 
 {% endif %}
 
+<h3>Events</h3>
+{% if event_list %}    
+    {% for event in event_list %}
+    <li> <a href="{% url 'event_detail' event.id %}">{{event.title}}</a></li>
+    {% endfor %}
+{% else %}
+    <p>You do not have any future events. </p> 
+{% endif %}
+<p><input class="btn btn-success" onclick="window.location.href = '{% url 'create_event' %}';" value="Create an event"></p>
+
+
 </div>
 {% endblock %}

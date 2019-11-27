@@ -15,7 +15,8 @@ from django.http.response import HttpResponseNotFound, HttpResponseForbidden
 from django.contrib import messages
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django.utils.dateparse import parse_date
-
+from datetime import date
+import datetime
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('login')
@@ -155,11 +156,38 @@ class CreateTeam(generic.CreateView):
 
 
 class UpdateTeam(OwnerUpdateView):
-    template_name = 'teams/team_form.html'
-    model = Team
-    fields = ['name', 'summary']
+    # model = Team
+    template = 'teams/team_update.html'
+    # fields = ['name', 'summary']
+    # success_url = reverse_lazy('team_list')
+    def get(self, request, pk):        
+        team = get_object_or_404(Team, id=pk)
+        form = TeamEditForm(instance=team)
+        ctx = {
+            'form': form, 
+            'name': team.name, 
+            'summary': team.summary, 
+            'pk': pk
+            }
+        return render(request, self.template, ctx)
+    
+    def post(self, request, pk=None):    
+        team = get_object_or_404(Team, id=pk)
+        form = TeamEditForm(request.POST, request.FILES or None, instance=team)
 
+        if not form.is_valid():
+            ctx = {
+                'form': form, 
+                'name': team.name, 
+                'summary': team.summary, 
+                'pk': pk
+                }
+            return render(request, self.template, ctx)
 
+        team.save()
+        success_url = reverse_lazy('team_detail', args=[pk])
+        
+        return redirect(success_url)
 
 class RemoveTeam(LoginRequiredMixin, DeleteView):
     model = Team
@@ -424,11 +452,15 @@ class DashboardView(LoginRequiredMixin, View):
         manager_task_list = Task.objects.filter(assigner=request.user)
         assigned_task_list = Task.objects.filter(worker=request.user)
         event_ids = Invitee.objects.filter(user=request.user).values('event')
-        event_list = Event.objects.filter(id__in=event_ids)
+        # invitee not func
+        event_newlist = Event.objects.filter(id__in=event_ids).filter(starttime__gte=datetime.date.today()).order_by("starttime")
+        print(event_newlist)
+        event_oldlist = Event.objects.exclude(id__in=event_ids).filter(endtime__lte=datetime.date.today()).order_by("-starttime")
         ctx = {
             "manager_task_list": manager_task_list,
             "assigned_task_list": assigned_task_list,
-            'event_list': event_list,
+            'event_oldlist': event_oldlist,
+            'event_newlist': event_newlist,
         }
         return render(request, self.template, ctx)
 
@@ -453,6 +485,8 @@ class CreateEventView(LoginRequiredMixin, View):
         invitee.save()
 
         return redirect("dashboard")
+
+
 
 
 class EventDetailView(LoginRequiredMixin, View):
@@ -487,6 +521,81 @@ class EventUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'events/update_event.html'
     success_url = reverse_lazy('dashboard')
 
+
 class EventDeleteView(LoginRequiredMixin, DeleteView):
     model = Event
     template_name = "events/delete_event.html"
+
+
+class MessageCreateView(LoginRequiredMixin, View):
+    template = "messages/create_message.html"
+    def get(self, request):
+        ulist = UserProfile.objects.all()
+        ctx = {'ulist': ulist}
+        return render(request, self.template, ctx)
+
+    def post(self, request):
+        title = request.POST.get("title")
+        body = request.POST.get("body")
+        status = Message.MESSAGE_NOT_READ
+        sender = request.user
+        receiver_id = request.POST.get("receiver")
+        receiver = UserProfile.objects.get(id=receiver_id).user
+        msg_time = datetime.datetime.now()
+        print(msg_time)
+
+        message = Message(
+            title=title, 
+            body = body, 
+            status=status, 
+            sender = sender, 
+            receiver = receiver,
+            msg_time = msg_time           
+            )
+        message.save()
+
+        return redirect("message_list")
+    
+
+class MessageDetailView(LoginRequiredMixin, View):
+    template = "messages/message_detail.html"
+
+    def get(self, request, pk) :
+        message = Message.objects.get(id=pk)
+        user = request.user
+        if not(message.sender == user or message.receiver == user):
+            return HttpResponseNotFound('not found')
+
+        context = {
+            "title": message.title, 
+            "body": message.body,
+            "sender": message.sender,
+            "receiver": message.receiver,
+            "msg_time": message.msg_time,
+        }
+        context["message_id"] = pk
+        if user == message.receiver and message.status == Message.MESSAGE_NOT_READ:
+            message.status = Message.MESSAGE_READ
+            message.save()
+        
+        return render(request,self.template, context)
+
+class MessageListView(LoginRequiredMixin, View):
+    template = "messages/messages.html"
+
+    def get(self, request):
+        user = request.user
+        message_recv_unread = Message.objects.filter(receiver=user, status=Message.MESSAGE_NOT_READ)
+        message_recv_read = Message.objects.filter(receiver=user, status=Message.MESSAGE_READ)
+
+        messages_sent = Message.objects.filter(sender=user)
+        ctx = {
+            'recv_unread': message_recv_unread,
+            'recv_read': message_recv_read,
+            'sent': messages_sent,
+        }
+        return render(request, self.template, ctx)
+
+class MessageDeleteView(LoginRequiredMixin, DeleteView):
+    model = Message
+    template_name = "messages/delete_message.html"

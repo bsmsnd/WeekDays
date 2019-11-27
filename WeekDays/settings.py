@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'django.contrib.humanize',
     'phonenumber_field',  # for phone number field
     'django_extensions', 
     'crispy_forms',  
@@ -110,7 +110,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # USER MODEL
-UTH_USER_MODEL = "users.UserProfile"
+# UTH_USER_MODEL = "users.UserProfile"
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/

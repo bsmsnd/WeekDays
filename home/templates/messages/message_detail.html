@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block head %}
+<title>Message Detail</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+<h3>From: {{sender}}</h3> {{sender.email}}
+<h3>To: {{receiver}}</h3> {{receiver.email}}
+<h3>Msg_Time: {{msg_time|naturaltime}}</h3>    
+    <h3>Title: {{title}}</h2>
+    <h3>Body</h3>
+    <p>{{body}}</p>
+    <button onclick="window.location.href = '{% url 'delete_message' message_id %}';">Delete Message</button>
+</div>
+
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+<title>Create a message</title>
+{% endblock %}
+
+{% block body%}
+<div class="container">
+<p>
+    <form name="addEventForm" action="" onsubmit="return validateForm();" method="post">
+    {% csrf_token %}     
+    <p><b>Title</b></p>
+    <input type="text" name="title" required>
+    
+    <p><b>Body</b></p>
+    <p>
+    <textarea name="body" rows="5" cols="50" wrap="soft">    
+    </textarea>
+    </p>    
+        
+    <p><b>Receiver</b></p>
+    <p>
+    <select name="receiver" required>
+        <option value="0">-- Please select --</option>
+        {% for user in ulist %}
+        <option value="{{user.id}}">{{ user.diaplay_name_and_email }}</option>
+        {% endfor %}        
+    </select>
+    </p>
+
+    
+
+    <p></p>
+    <p><input type="submit" value="Submit"></p>
+
+    </form>        
+</p>
+</div>
+
+<script type="text/javascript">
+    function validateForm(){
+        // Validate entries and raise alerts if necessary
+        // alert("Pause");
+        // 1. Title should greater than 2 characters
+        var title = document.forms["addEventForm"]["title"].value;
+        console.log(title);
+        console.log(title.length);
+        if (title.length < 2)
+        {
+            alert("Title too short: Title must be greater than 2 characters");
+            return false;
+        }                
+        
+        // 4. Date
+        var arrChooseStartDate = document.forms["addEventForm"]["start_date"].value.split("-");
+        
+        var chooseStartYear = parseInt(arrChooseStartDate[0]);
+        var chooseStartMonth = parseInt(arrChooseStartDate[1]);
+        var chooseStartDay = parseInt(arrChooseStartDate[2]);
+
+        console.log(chooseStartYear,chooseStartMonth, chooseStartDay);
+
+        var arrChooseEndDate = document.forms["addEventForm"]["end_date"].value.split("-");
+        
+        var chooseEndYear = parseInt(arrChooseEndDate[0]);
+        var chooseEndMonth = parseInt(arrChooseEndDate[1]);
+        var chooseEndDay = parseInt(arrChooseEndDate[2]);
+
+        console.log(chooseEndYear,chooseEndMonth, chooseEndDay);
+        
+        if (chooseEndYear < chooseStartYear || (chooseEndYear == chooseStartYear && chooseEndMonth < chooseStartMonth) || (chooseEndYear == chooseStartYear && chooseEndMonth == chooseStartMonth && chooseEndDay < chooseStartDay))
+        {
+            alert("The start date should be later than end date.")
+            return false;
+        }
+
+        return true;        
+    }
+</script>
+{% endblock %}

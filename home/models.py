@@ -3,7 +3,7 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models.signals import post_save
 from django.core.validators import MinLengthValidator, MinValueValidator, MaxValueValidator
-
+from datetime import datetime
 # Create your models here.
 # class UserProfileManager(models.Manager):
 #     def get_queryset(self):
@@ -176,8 +176,8 @@ class Event(models.Model):
     host = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.title + "hosted by %s %s (%s)" % (str(self.host.last_name), str(self.host.first_name), str(host.username))
-
+        return self.title
+        #return self.title
 
 class Invitee(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -187,7 +187,7 @@ class Invitee(models.Model):
         return "User " + str(self.user.id) + " <--> event" + str(self.event.id)
 
 
-class Messages(models.Model):
+class Message(models.Model):
 
     title = models.CharField(
         max_length=200,
@@ -197,17 +197,21 @@ class Messages(models.Model):
         max_length=1000,        
         null=True, blank=True     
     )
+    msg_time = models.DateTimeField()
+   
 
+    MESSAGE_NOT_READ = 1
+    MESSAGE_READ = 2
     MESSAGE_STATUS = (
-        (1, 'Not Read'),
-        (2, 'Read'),     
+        (MESSAGE_NOT_READ, 'Not Read'),
+        (MESSAGE_READ, 'Read'),  
     )
 
-    progress = models.PositiveSmallIntegerField(
+    status = models.PositiveSmallIntegerField(
         choices=MESSAGE_STATUS, default=1,        
     )
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver')
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name='receiver',)
 
     def __str__(self):
-        return self.title + " (from %s)" % str(self.user.username)
+        return str(self.title)

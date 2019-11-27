@@ -15,7 +15,7 @@
 {% else %}
     <p>You do not have any ongoing tasks managed. </p> 
 {% endif %}
-
+<br>
 <p><input class="btn btn-success" onclick="window.location.href = '{% url 'pre_create_task' %}';" value="Create a task"></p>
 
 <h3>Tasks TODO</h3>
@@ -27,16 +27,26 @@
     <p>You do not have any active tasks to work on. </p> 
 {% endif %}
 
-<h3>Events</h3>
-{% if event_list %}    
-    {% for event in event_list %}
+<h3>UpcomingEvents</h3>
+{% if event_newlist %}    
+    {% for event in event_newlist %}
     <li> <a href="{% url 'event_detail' event.id %}">{{event.title}}</a></li>
     {% endfor %}
 {% else %}
-    <p>You do not have any future events. </p> 
+    <p>You do not have any upcoming events. </p> 
 {% endif %}
-<p><input class="btn btn-success" onclick="window.location.href = '{% url 'create_event' %}';" value="Create an event"></p>
 
+<h3>PastEvents</h3>
+{% if event_oldlist %}    
+    {% for event in event_oldlist %}
+    <li> <a href="{% url 'event_detail' event.id %}">{{event.title}}</a></li>
+    {% endfor %}
+{% else %}
+    <p>You do not have any past events. </p> 
+{% endif %}
+
+<br>
+<p><input class="btn btn-success" onclick="window.location.href = '{% url 'create_event' %}';" value="Create an event"></p>
 
 </div>
 {% endblock %}

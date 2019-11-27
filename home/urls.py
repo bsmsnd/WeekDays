@@ -70,3 +70,11 @@ urlpatterns += [
     path('events/<int:pk>/update', EventUpdateView.as_view(), name="event_update"),
     path('events/<int:pk>/delete', EventDeleteView.as_view(success_url=reverse_lazy('dashboard')), name="event_delete"), 
 ]
+
+# Messages
+urlpatterns += [
+    path('message/create', MessageCreateView.as_view(), name="create_message"),
+    path('message/<int:pk>/delete', MessageDeleteView.as_view(success_url=reverse_lazy('message_list')), name="delete_message"),
+    path('message/<int:pk>', MessageDetailView.as_view(), name="message_detail"), 
+    path('message', MessageListView.as_view(), name="message_list"),
+]

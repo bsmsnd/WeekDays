@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block head %}
+<title>Delete Message</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+<p>
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <h4>Do you want delete the message?</h4>
+    <input type="submit" value="Yes, delete">
+    <input type="submit" value="Cancel" onclick="window.location.href='{% url 'message_list'%}';return false;">
+  </form>
+  
+</p>
+</div>
+{% endblock %}

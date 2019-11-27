@@ -118,3 +118,9 @@ class TaskManagerEditForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ['description', 'priority', 'assigner_tag', 'due_date']
+
+class TeamEditForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = ['name', 'summary']
+

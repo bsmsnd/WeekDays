@@ -9,29 +9,33 @@
 <div class="container">
     <h2>Unread Messages</h2>
     {% if recv_unread %}
-        {% for msg in recv_unread %}
+       <ul> {% for msg in recv_unread %}
          <li><a href="{% url 'message_detail' msg.id%}">{{msg.title}} from {{msg.sender}}</a>
         {% endfor %}
+    </ul>
     {% else %}
         <p>Great! You have read all messages!</p>
     {% endif %}
 
-    <h2>Read Messages</h2>
     {% if recv_read %}
-        {% for msg in recv_read %}
+    <h2>Read Messages</h2>
+        <ul>{% for msg in recv_read %}
         <li><a href="{% url 'message_detail' msg.id%}">{{msg.title}} from {{msg.sender}}</a>
-        {% endfor %}             
+        {% endfor %} 
+    </ul>            
     {% endif %}
 
     <h2>Sent Messages</h2>
     {% if sent %}
-        {% for msg in sent %}
+        <ul>{% for msg in sent %}
         <li><a href="{% url 'message_detail' msg.id%}">{{msg.title}}</a>
         {% endfor %}
+    </ul>
     {% else %}
         <p>You have not sent any messages.</p>
     {% endif %}    
-<p><input class="btn btn-success" onclick="window.location.href = '{% url 'create_message' %}';" value="Create an Message"></p>
+<p><button class="button" onclick="window.location.href = '{% url 'create_message' %}';">Create an Message</button></p>
+
 
 </div>
 {% endblock %}

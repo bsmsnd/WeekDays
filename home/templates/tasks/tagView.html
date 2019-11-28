@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+<title>Tasks by Tags</title>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+<h1>Your Tasks</h1>
+
+{% if manager_tasks %}
+<h2>Managed Task</h2>
+{% for tag_and_task in manager_tasks %}
+    {% if tag_and_task.tlist %}
+    <h3>{{ tag_and_task.name }} </h3>
+    <ul>
+        {% for task in tag_and_task.tlist %}        
+        <li><a href="{% url 'task_detail' task.id%}">{{task}}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+{% endfor %}
+{% endif %}
+
+{% if employee_tasks %}
+<h2>Assigned Task</h2>
+{% for tag_and_task in employee_tasks %}
+    {% if tag_and_task.tlist %}
+    <h3>{{ tag_and_task.name }} </h3>
+    <ul>
+        {% for task in tag_and_task.tlist %}        
+        <li><a href="{% url 'task_detail' task.id%}">{{task}}</a></li>
+        {% endfor %}
+    </ul>    
+    {% endif %}    
+{% endfor %}
+{% endif %}
+</div>
+{% endblock %}

@@ -101,7 +101,8 @@ class Membership(models.Model):
 class Tag(models.Model):
     name = models.CharField(
         max_length=200,
-        validators=[MinLengthValidator(2, "Tag must be greater than 2 characters")]
+        validators=[MinLengthValidator(2, "Tag must be greater than 2 characters")],
+        unique=True        
     )
 
     def __str__(self):
@@ -180,7 +181,7 @@ class Event(models.Model):
         #return self.title
 
 class Invitee(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     def __str__(self):

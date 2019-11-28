@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView,RedirectView
 from django.conf.urls import url
 from .views import *
 # from django.contrib.auth.views import (
@@ -12,7 +12,7 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordResetView, 
 # app_name='home'
 urlpatterns = [
     # path('', LoginView.as_view(template_name='accounts/login.html'),name='home'),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),    
+    path('', RedirectView.as_view(permanent = False, url='/dashboard'), name='home'),    
     path('accounts/login/', LoginView.as_view(template_name='accounts/login.html'),name='accounts_login'),
     # path('accounts/login/', LoginView.as_view(template_name='index.html'), name='accounts_login'),    
     path('login/', LoginView.as_view(template_name='accounts/login.html'),name='login'),
@@ -45,6 +45,7 @@ urlpatterns += [
     path('dashboard', DashboardView.as_view(), name='dashboard'),
     path('test', TestPreCreateTask.as_view(), name='pre_create_task'),
     path('test/<int:pk>', TestCreateTask.as_view(), name='create_task_with_team_id'),
+    path('tasks/tags', TaskByTagView.as_view(), name="tasks_by_tag"),
 ]
 
 # Teams
@@ -58,7 +59,6 @@ urlpatterns += [
     url(r'^teams/(?P<pk>[0-9]+)/transferOwner/(?P<pk2>[0-9]+)$', transfer_owner, name='transfer_owner'),
     path('teams/create', CreateTeam.as_view(success_url=reverse_lazy('team_list')), name='team_create'),
     path('teams/<int:pk>/remove', RemoveTeam.as_view(success_url=reverse_lazy('team_list')), name='team_remove'),
-
     
 ]
 

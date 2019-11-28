@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-
 {% block head %}
 <title>Task Detail</title>
 {% endblock %}
@@ -8,20 +7,18 @@
 {% block body %}
 <div class="container">
     <h2>Task: {{title}}</h2>
-
-    <h3>Task Description</h3>
-    <p>{{description}}</p>
-    
-    <h3>Tag</h3>
-    <p>{{tag}}</p>
-    <h3>Priority: {{priority}}</h3>
-    <h3>Due: {{due_date}}</h3>
-    {% comment %} <ul> {% endcomment %}    
     {% if role == 1 %}
     <h4>The task was assigned to {{associate_user}}</h4>
     {% else %}
-    <h4>The task was assigned by {{associate_user}}</h4>
     {% endif %}
+
+    <h3>Task Description: </h3>
+    <p> {{description}} </p>
+    <h3>Tag: {{tag}}</h3>
+    <h3>Priority: {{priority}}</h3>
+    <h3>Due: {{due_date}}</h3>
+    {% comment %} <ul> {% endcomment %}    
+
     
     <h3>Results</h3>
     <h4>Current Progress: {{progress}} </h4>
@@ -31,8 +28,8 @@
     <img src="{{ user.userprofile.image.url }}" width="240">
     {% endif %} -->
     {% if role == 1 %}
-    <button onclick="window.location.href = '{% url 'edit_task' task_id %}';">Edit Task</button>
-    <button onclick="window.location.href = '{% url 'delete_task' task_id %}';">Delete Task</button>
+    <p><button class="button1" onclick="window.location.href = '{% url 'edit_task' task_id %}';">Edit Task</button></p>
+    <!-- <button onclick="window.location.href = '{% url 'delete_task' task_id %}';">Delete Task</button> -->
 
     {% else %}
     <button onclick="window.location.href = '{% url 'update_task' task_id %}';">Update Task</button>

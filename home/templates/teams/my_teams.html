@@ -8,9 +8,10 @@
 
 {% block body %}
 <div class="container">
-    <h2>My Teams <i class="fas fa-users"></i></h2>
+    <h2><i class="fas fa-users"></i> My Teams </h2>
     {% if teams %}
     <ul>
+    <br>
         {% for team in teams %}
         <li>
             <a href="{% url 'team_detail' team.id%}">{{team.name}}</a>
@@ -25,8 +26,7 @@
     <p>You have not joined any team yet. <a href="{% url 'team_create' %}">Create a team now!</a></p>
     {% endif %}
     
-            <button onclick="window.location.href = '{% url 'team_create' %}';">Create Team</button>
-    
+    <p><button class='button' onclick="window.location.href = '{% url 'team_create' %}';">Create Team</button></p>
     
 </div>
 {% endblock %}

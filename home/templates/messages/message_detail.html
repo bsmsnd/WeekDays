@@ -8,13 +8,13 @@
 
 {% block body %}
 <div class="container">
-<h3>From: {{sender}}</h3> {{sender.email}}
-<h3>To: {{receiver}}</h3> {{receiver.email}}
-<h3>Msg_Time: {{msg_time|naturaltime}}</h3>    
-    <h3>Title: {{title}}</h2>
-    <h3>Body</h3>
-    <p>{{body}}</p>
-    <button onclick="window.location.href = '{% url 'delete_message' message_id %}';">Delete Message</button>
+<h3>Title: {{title}}</h3>
+<h4>From: {{sender}} </h4> {{sender.email}}
+<h4>To: {{receiver}} </h4> {{receiver.email}}
+<h4>This message was sent : {{msg_time|naturaltime}}</h4>    
+<h3>Body</h3>
+<p>{{body}}</p>
+<button onclick="window.location.href = '{% url 'delete_message' message_id %}';">Delete Message</button>
 </div>
 
 {% endblock %}

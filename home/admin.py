@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
 # from .forms import CustomUserCreationForm, CustomUserChangeForm
-from .models import UserProfile, Gender, Title, Team, Task, Membership, Tag, Message, Event
+from .models import UserProfile, Gender, Title, Team, Task, Membership, Tag, Message, Event,Invitee
 
 # Register your models here.
 # class CustomUserAdmin(UserAdmin):
@@ -77,6 +77,13 @@ class MessageAdmin(admin.ModelAdmin):
         queryset = super(MessageAdmin, self).get_queryset(request)        
         return queryset
 
+
+class InviteeAdmin(admin.ModelAdmin):
+    list_display = ('user', 'event')
+    def get_queryset(self, request):
+        queryset = super(InviteeAdmin, self).get_queryset(request)        
+        return queryset
+
 admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Gender, GenderAdmin)
 admin.site.register(Title, TitleAdmin)
@@ -86,3 +93,4 @@ admin.site.register(Membership, MembershipAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Event, EventAdmin)
 admin.site.register(Message, MessageAdmin)
+admin.site.register(Invitee, InviteeAdmin)

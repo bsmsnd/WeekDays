@@ -7,7 +7,7 @@
 
 {% block body %}
 <div class="container">
-    <h2>Team {{team}}</h2>
+    <h2>Team: {{team}}</h2>
     <p>Summary: {{summary}}</p>
 
     <h3> Managers </h3>
@@ -17,7 +17,7 @@
     <li><a href="{% url 'view_profile_with_pk' manager.id%}">{{manager.display_name}}</a>
     {% if user == team.owner %}
     {% if manager.user != team.owner %}
-          <a href="#" onclick="confirmTransfer('{% url 'transfer_owner' team.id manager.id %}'); return false;"><i class="fa fa-pencil"></i></a> 
+          <a href="#" onclick="confirmTransfer('{% url 'transfer_owner' team.id manager.id %}'); return false;"><i class="fas fa-user-tie"></i></a> 
     {% endif %}
     {% endif %}
 </li>
@@ -61,21 +61,19 @@
     <input type="submit" value="Add Member">
     </form>
     
+
+    
     <button onclick="window.location.href = '{% url 'team_remove' team.id %}';">Delete Team</button>
     <button onclick="window.location.href = '{% url 'team_update' team.id %}';">Update Team</button>
-
+    <br>
     {% comment %} <input type="text" id="add_member" name="add_member"  placeholder="add a member">
     <button onclick="addMember(document.getElementById('add_member').value);">(Test)Add Team Member</button>
     {% endcomment %}
 
     {% endif %}
-
-
-    <br>
     <br>
     {% if role == 1 %}
     <p><input class="btn btn-success" onclick="window.location.href = '{% url 'create_task_with_team_id' team.id %}';" value="Create a task"></p>
-
     {% endif %}
 </div>
 

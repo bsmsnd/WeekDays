@@ -218,7 +218,13 @@ class InviteMember(LoginRequiredMixin, View):
         member.save()
         #print(member)        
         return redirect(reverse("team_detail", args=[pk]))
-    
+
+
+
+
+
+
+   
 
 def promote_member(request, pk, pk2):
     userobj= UserProfile.objects.get(id = pk2)
@@ -451,11 +457,14 @@ class DashboardView(LoginRequiredMixin, View):
         # userProfile_id = UserProfile.objects.get(user=request.user)
         manager_task_list = Task.objects.filter(assigner=request.user)
         assigned_task_list = Task.objects.filter(worker=request.user)
-        event_ids = Invitee.objects.filter(user=request.user).values('event')
+        # event_ids = Invitee.objects.filter(user=request.user).values('event')
+        userpro=UserProfile.objects.get(user=self.request.user)
+        event_ids = Invitee.objects.filter(user=userpro).values('event')
         # invitee not func
+        # event_newlist = Event.objects.filter(id__in=event_ids).filter(starttime__gte=datetime.date.today()).order_by("starttime")
         event_newlist = Event.objects.filter(id__in=event_ids).filter(starttime__gte=datetime.date.today()).order_by("starttime")
         print(event_newlist)
-        event_oldlist = Event.objects.exclude(id__in=event_ids).filter(endtime__lte=datetime.date.today()).order_by("-starttime")
+        event_oldlist = Event.objects.filter(id__in=event_ids).filter(endtime__lt=datetime.date.today()).order_by("-starttime")
         ctx = {
             "manager_task_list": manager_task_list,
             "assigned_task_list": assigned_task_list,
@@ -465,10 +474,50 @@ class DashboardView(LoginRequiredMixin, View):
         return render(request, self.template, ctx)
 
 
+class TaskByTagView(LoginRequiredMixin, View):
+    template = "tasks/tagView.html"
+    def get(self, request):
+        manager_task_list = Task.objects.filter(assigner=request.user)
+        manager_tags = manager_task_list.values("assigner_tag").distinct()
+        if manager_task_list:
+            qs = manager_task_list.filter(assigner_tag__isnull=True)
+            manager_ctx = [{"name":"Tag Not Assigned", "tlist": qs}]
+            if manager_task_list:
+                for tag in manager_tags:                
+                    tag_id = list(tag.values())[0]
+                    tag_instance = Tag.objects.get(id=tag_id)                
+                    qs = manager_task_list.filter(assigner_tag=tag_instance)
+                    manager_ctx.append({"name": str(tag_instance), "tlist": qs}) 
+            print(manager_ctx)
+        else:
+            manager_ctx = None
+
+        assigned_task_list = Task.objects.filter(worker=request.user)
+        worker_tags = assigned_task_list.values("worker_tag").distinct()
+        if assigned_task_list:
+            qs = assigned_task_list.filter(worker_tag__isnull=True)        
+            worker_ctx = [{"name":"Tag Not Assigned", "tlist": qs}]        
+            if manager_task_list:
+                for tag in worker_tags:
+                    tag_id = list(tag.values())[0]
+                    tag_instance = Tag.objects.get(id=tag_id)                
+                    qs = manager_task_list.filter(assigner_tag=tag_instance)                
+                    worker_ctx.append({"name": str(tag_instance), "tlist": qs}) 
+            print(worker_ctx)
+        else:
+            worker_ctx = None
+
+        ctx = {'manager_tasks': manager_ctx, 'employee_tasks': worker_ctx}
+        return render(request, self.template, ctx)
+
+
 class CreateEventView(LoginRequiredMixin, View):
     template = "events/create_event.html"
     def get(self, request):
-        return render(request, self.template)
+        ulist = UserProfile.objects.all()
+        
+        context = { 'ulist': ulist}
+        return render(request, self.template, context)
 
     def post(self, request):
         title = request.POST.get("title")
@@ -477,13 +526,23 @@ class CreateEventView(LoginRequiredMixin, View):
         endtime = request.POST.get("end_date")
         location = request.POST.get("location")
         user = request.user
-
         event = Event(title=title, description=desc, starttime=starttime, endtime=endtime, location=location, host=user)
         event.save()
-
-        invitee = Invitee(event=event, user=user)
+        
+        #new code
+        userpro = UserProfile.objects.get(user =request.user)
+        invitee = Invitee(event=event, user=userpro)
         invitee.save()
-
+        userProfile_id_to_add = request.POST.getlist("user_id")
+        for u in userProfile_id_to_add:
+            userProfile = UserProfile.objects.get(user=u)
+            invitee = Invitee(event=event, user=userProfile)
+            invitee.save()
+        #invitee = Invitee(event=event, user=user)
+        # invitee.save()
+        
+        # invitee = Invitee(event=event, user=userProfile)
+        # invitee.save()
         return redirect("dashboard")
 
 

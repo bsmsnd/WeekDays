@@ -8,8 +8,8 @@
 {% block body %}
 <div class="container">
     <h2>Team: {{team}}</h2>
-    <p>Summary: {{summary}}</p>
-
+    <h4>Summary: {{summary}}</h4>
+  
     <h3> Managers </h3>
     <ul>
     {% for manager in managers %}
@@ -17,7 +17,7 @@
     <li><a href="{% url 'view_profile_with_pk' manager.id%}">{{manager.display_name}}</a>
     {% if user == team.owner %}
     {% if manager.user != team.owner %}
-          <a href="#" onclick="confirmTransfer('{% url 'transfer_owner' team.id manager.id %}'); return false;"><i class="fas fa-user-tie"></i></a> 
+          <a href="#" onclick="confirmTransfer('{% url 'transfer_owner' team.id manager.id %}'); return false;"><i class="fas fa-user-friends"></i></a> 
     {% endif %}
     {% endif %}
 </li>
@@ -33,7 +33,6 @@
         {% if user == team.owner %}
             <a href="#" onclick="confirmDelete('{% url 'delete_member' team.id employee.id %}'); return false;"><i class="fa fa-trash"></i></a> 
             <a href="#" onclick="confirmPromote('{% url 'promote_member' team.id employee.id %}'); return false;"><i class="far fa-arrow-alt-circle-up"></i></a> 
-            
             {% comment %} <a href="{% url 'delete_member' team.id employee.id%}"><i class="fa fa-trash"></i></a> {% endcomment %}
         {% endif %}
         </li>        
@@ -58,23 +57,22 @@
     <option value="{{user.id}}">{{ user.diaplay_name_and_email }}</option>
     {% endfor %}
     </select>
-    <input type="submit" value="Add Member">
+    <input type="submit" value="Add a Member">
     </form>
+    <p><button class="action-button animate blue" onclick="window.location.href = '{% url 'team_remove' team.id  %}';">Delete Team</button></p>
+    <p><button class="action-button animate red" onclick="window.location.href = '{% url 'team_update' team.id  %}';">Update Team</button></p>
     
-
+    {% if role == 1 %}
+    <p><button class="action-button animate green" onclick="window.location.href = '{% url 'create_task_with_team_id' team.id   %}';">Create a task</button></p>
     
-    <button onclick="window.location.href = '{% url 'team_remove' team.id %}';">Delete Team</button>
-    <button onclick="window.location.href = '{% url 'team_update' team.id %}';">Update Team</button>
+    {% endif %}
     <br>
     {% comment %} <input type="text" id="add_member" name="add_member"  placeholder="add a member">
     <button onclick="addMember(document.getElementById('add_member').value);">(Test)Add Team Member</button>
     {% endcomment %}
 
     {% endif %}
-    <br>
-    {% if role == 1 %}
-    <p><input class="btn btn-success" onclick="window.location.href = '{% url 'create_task_with_team_id' team.id %}';" value="Create a task"></p>
-    {% endif %}
+
 </div>
 
 

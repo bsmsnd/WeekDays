@@ -1,0 +1,151 @@
+body
+{
+	padding: 50px;
+}
+
+.animate
+{
+	transition: all 0.1s;
+	-webkit-transition: all 0.1s;
+}
+
+.action-button
+{
+	position: relative;
+	padding: 8px 20px;
+margin: 0px 5px 5px 5px;
+float: left;
+	border-radius: 6px;
+	font-family: 'Pacifico', cursive;
+	font-size: 15px;
+	color: #FFF;
+	text-decoration: none;	
+	
+}
+
+.blue
+{
+	background-color: #3498DB;
+	border-bottom: 5px solid #2980B9;
+	text-shadow: 0px -2px #2980B9;
+}
+
+.red
+{
+	background-color: #E74C3C;
+	border-bottom: 5px solid #BD3E31;
+	text-shadow: 0px -2px #BD3E31;
+}
+
+.green
+{
+	background-color: #82BF56;
+	border-bottom: 5px solid #669644;
+	text-shadow: 0px -2px #669644;
+}
+
+.yellow
+{
+	background-color: rgb(238, 197, 76);
+	border-bottom: 5px solid #D1B358;
+	text-shadow: 0px -2px #D1B358;
+}
+
+
+.action-button:active
+{
+	transform: translate(0px,5px);
+  -webkit-transform: translate(0px,5px);
+	border-bottom: 1px solid;
+}
+
+
+
+
+.dailydeals {
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-size: 23px;
+    font-weight: italic;
+    color: #d8338e;
+   }
+
+.h1new {
+/* font-family: Georgia, "Times New Roman", Times, serif; */
+
+font-size: 4rem;
+font-weight:bold;
+}
+.h11new {
+	/* font-family: Georgia, "Times New Roman", Times, serif; */
+	
+	font-size: 3.8rem;
+	font-weight:bold;
+	}
+
+.h2new {
+	/* font-family: Georgia, "Times New Roman", Times, serif; */
+	padding-left: 20px;
+	font-size: 3rem;
+	font-weight:bold;
+	}
+
+.h22new {
+	/* font-family: Georgia, "Times New Roman", Times, serif; */
+	padding-left: 20px;
+	font-size: 3.5rem;
+	font-weight:bold;
+	}
+
+.h3new {
+	/* font-family: Georgia, "Times New Roman", Times, serif; */
+	padding-left: 25px;
+	font-size: 2.5rem;
+	font-weight:normal;
+	}
+
+.pnew {
+	/* font-family: Georgia, "Times New Roman", Times, serif; */
+	padding-left: 30px;
+	font-size: 1.5rem;
+	font-weight:normal;
+	}
+.h33new {
+	/* font-family: Georgia, "Times New Roman", Times, serif; */
+	padding-left: 25px;
+	font-size: 2rem;
+	font-weight:normal;
+	}
+.h4new {
+	/* font-family: Georgia, "Times New Roman", Times, serif; */
+	padding-left: 25px;
+	font-size: 2rem;
+	font-weight:normal;
+	}
+.h5new {
+		/* font-family: Georgia, "Times New Roman", Times, serif; */
+		padding-left: 25px;
+		font-size: 1.8rem;
+		font-weight:normal;
+	}
+.h7new {
+	/* font-family: Georgia, "Times New Roman", Times, serif; */
+	padding-left: 0px;
+	font-size: 3.5rem;
+	font-weight:normal;
+}
+
+
+
+
+
+.display-flex {
+	display: flex;
+  }
+  
+.div-size {
+	/* border: 3px  inset rgb(0, 132, 255); */
+	background: rgba(245, 246, 247, 0.993);
+	width: 580px;
+	height: 500px;
+	margin: 10px;
+  }

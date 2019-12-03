@@ -7,10 +7,13 @@
 
 {% block body %}
 <div class="container">
-<h1>Your Tasks</h1>
+
+<span class="h11new">Your Tasks</span> 
+<br>
 
 {% if manager_tasks %}
-<h2>Managed Task</h2>
+<span class="h2new">Managed Task</span> 
+<br>
 {% for tag_and_task in manager_tasks %}
     {% if tag_and_task.tlist %}
     <h3>{{ tag_and_task.name }} </h3>
@@ -24,7 +27,7 @@
 {% endif %}
 
 {% if employee_tasks %}
-<h2>Assigned Task</h2>
+<span class="h2new">Assigned Task</span>
 {% for tag_and_task in employee_tasks %}
     {% if tag_and_task.tlist %}
     <h3>{{ tag_and_task.name }} </h3>

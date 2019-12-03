@@ -7,22 +7,31 @@
 
 {% block body %}
 <div class="container">
-    <h2>Event: {{title}}</h2>
+    <span class="h22new">Event: {{title}}</span> 
+    <br>
+    <!-- <h2>Event: {{title}}</h2> -->
 
-    <h3>Event Description</h3>
-    <p>{{description}}</p>
-    
-    <h3>StartTime: {{starttime}}</h3>
-    <h3>EndTime: {{endtime}}</h3>
-    <h3>Location: {{location}}</h3>
-    <h3>Host: {{host}}</h3>
+    <span class="h3new">Event Description:</span>
+    <br> 
+    <span class="pnew">{{description}}</span> 
+    <br> 
+    <span class="h33new">Start Time: {{starttime}}</span>
+    <br>
+    <span class="h33new">End Time: {{endtime}}</span>
+    <br>
+    <span class="h33new">Location: {{location}}</span>
+    <br>
+    <span class="h33new">Host: {{host}}</span>
   
+    <br>
     <!-- {% if user.userprofile.image %}
     <img src="{{ user.userprofile.image.url }}" width="240">
     {% endif %} -->
+    <br>
     {% if host == user %}
-    <button onclick="window.location.href = '{% url 'event_update' event_id %}';">Edit Event</button>
-    <button onclick="window.location.href = '{% url 'event_delete' event_id %}';">Delete Event</button>
+    <button class="action-button animate blue" onclick="window.location.href = '{% url 'event_update' event_id %}';">Edit Event</button>
+    <button class="action-button animate red" onclick="window.location.href = '{% url 'event_delete' event_id %}';">Delete Event</button>
+
     {% endif %}
 
 </div>

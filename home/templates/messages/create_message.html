@@ -8,17 +8,9 @@
 {% block body%}
 <div class="container">
 <p>
+
     <form name="addEventForm" action="" onsubmit="return validateForm();" method="post">
-    {% csrf_token %}     
-    <p><b>Title</b></p>
-    <input type="text" name="title" required>
-    
-    <p><b>Body</b></p>
-    <p>
-    <textarea name="body" rows="5" cols="50" wrap="soft">    
-    </textarea>
-    </p>    
-        
+    {% csrf_token %} 
     <p><b>Receiver</b></p>
     <p>
     <select name="receiver" required>
@@ -28,7 +20,17 @@
         {% endfor %}        
     </select>
     </p>
-
+    
+    <p><b>Title</b></p>
+    <input type="text" name="title" required>
+    
+    <p><b>Body</b></p>
+    <p>
+    <textarea name="body" rows="5" cols="50" wrap="soft">    
+    </textarea>
+    </p>    
+        
+    
     
 
     <p></p>

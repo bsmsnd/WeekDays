@@ -8,13 +8,26 @@
 
 {% block body %}
 <div class="container">
-<h3>Title: {{title}}</h3>
-<h4>From: {{sender}} </h4> {{sender.email}}
-<h4>To: {{receiver}} </h4> {{receiver.email}}
-<h4>This message was sent : {{msg_time|naturaltime}}</h4>    
-<h3>Body</h3>
-<p>{{body}}</p>
-<button onclick="window.location.href = '{% url 'delete_message' message_id %}';">Delete Message</button>
+<!-- <h3>Title: {{title}}</h3> -->
+<span class="h3new">Title: {{title}}</span> 
+<br>
+<span class="h33new">From: {{sender}}</span> 
+<br>
+<span class="h33new">To: {{receiver}}</span> 
+<br>
+<!-- <h4>From: {{sender}} </h4> {{sender.email}} -->
+<!-- <h4>To: {{receiver}} </h4> {{receiver.email}} -->
+<span class="h33new">This message was sent : {{msg_time|naturaltime}}</span> 
+<br>
+<!-- <h4>This message was sent : {{msg_time|naturaltime}}</h4>     -->
+<span class="h33new">Body:</span> 
+<br>
+<span class="pnew">{{body}}</span> 
+<br>
+<br>
+
+<p><button class="action-button animate blue" onclick="window.location.href = '{% url 'delete_message' message_id %}';">Delete Message</button></p>
+
 </div>
 
 {% endblock %}

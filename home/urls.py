@@ -59,7 +59,6 @@ urlpatterns += [
     url(r'^teams/(?P<pk>[0-9]+)/transferOwner/(?P<pk2>[0-9]+)$', transfer_owner, name='transfer_owner'),
     path('teams/create', CreateTeam.as_view(success_url=reverse_lazy('team_list')), name='team_create'),
     path('teams/<int:pk>/remove', RemoveTeam.as_view(success_url=reverse_lazy('team_list')), name='team_remove'),
-    
 ]
 
 

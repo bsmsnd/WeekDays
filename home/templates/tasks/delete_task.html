@@ -11,7 +11,7 @@
   <form action="" method="post">
     {% csrf_token %}
     {{ form|crispy }}
-    <h4>Do you want delete the task?</h4>
+    <p>Do you want delete the task?</p>
     <input type="submit" value="Yes, delete">
     <input type="submit" value="Cancel" onclick="window.location.href='{% url 'dashboard'%}';return false;">
   </form>

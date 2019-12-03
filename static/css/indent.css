@@ -1,0 +1,56 @@
+h1,
+h2,
+h3,
+h4,
+p_h2
+{
+    margin: .5rem .4rem;
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+h2 {
+    font-size: 2.4em;
+    padding-left: 20px;
+}
+
+h3 {
+    font-size: 2rem;
+    padding-left: 40px;
+}
+
+h4
+{
+    font-size: 1.5rem;
+    padding-left: 40px;
+}
+
+p_h2 {
+    font-size: 1.5rem;
+    padding-left: 60px;
+}
+
+
+button {
+background-color: #008CBA; /* Green */
+border: none;
+border-radius: 6px;
+box-shadow: 0 8px 16px 0 rgba(56, 53, 53, 0.2), 0 4px 15px 0 rgba(58, 55, 55, 0.19);
+color: white;
+padding: 10px 20px;
+text-align: center;
+text-decoration: none;
+display: inline-block;
+font-size: 12px;
+margin: 6px 8px;
+cursor: pointer;
+-webkit-transition-duration: 0.4s; /* Safari */
+transition-duration: 0.4s;
+}
+
+
+
+
+

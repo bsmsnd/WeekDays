@@ -25,8 +25,8 @@
     {% else %}
     <p>You have not joined any team yet. <a href="{% url 'team_create' %}">Create a team now!</a></p>
     {% endif %}
+    <p><button class="action-button animate blue" onclick="window.location.href = '{% url 'team_create'  %}';">Create a Team</button></p>
     
-    <p><button class='button' onclick="window.location.href = '{% url 'team_create' %}';">Create Team</button></p>
     
 </div>
 {% endblock %}

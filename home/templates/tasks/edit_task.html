@@ -1,13 +1,14 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
-
+{% load static %}
 {% block head %}
 <title>Task Edit</title>
 {% endblock %}
 
 {% block body %}
 <div class="container">
-<h2>{{ title }}</h2>
+<span class="h7new">{{ title }}</span>
+<br>
 <p>The task was assigned to {{employee}}</p>
 <p>
   <form action="" method="post">
@@ -18,7 +19,8 @@
   </form>
 </p>
 
-<h3>Results</h3>
+<span class="h7new">Results</span>
+
 <p>Current Progress: {{progress}} </p>
 <p>{{results}}</p>
 </div>

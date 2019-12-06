@@ -482,31 +482,38 @@ class TaskByTagView(LoginRequiredMixin, View):
         if manager_task_list:
             qs = manager_task_list.filter(assigner_tag__isnull=True)
             manager_ctx = [{"name":"Tag Not Assigned", "tlist": qs}]
-            if manager_task_list:
-                for tag in manager_tags:                
+            if manager_tags:
+                for tag in manager_tags:    
                     tag_id = list(tag.values())[0]
-                    tag_instance = Tag.objects.get(id=tag_id)                
-                    qs = manager_task_list.filter(assigner_tag=tag_instance)
-                    manager_ctx.append({"name": str(tag_instance), "tlist": qs}) 
+                    if (tag_id):
+                        tag_instance = Tag.objects.get(id=tag_id)                
+                        qs = manager_task_list.filter(assigner_tag=tag_instance)
+                        manager_ctx.append({"name": str(tag_instance), "tlist": qs}) 
             print(manager_ctx)
         else:
             manager_ctx = None
 
         assigned_task_list = Task.objects.filter(worker=request.user)
+        print("@@@", assigned_task_list)
         worker_tags = assigned_task_list.values("worker_tag").distinct()
         if assigned_task_list:
             qs = assigned_task_list.filter(worker_tag__isnull=True)        
             worker_ctx = [{"name":"Tag Not Assigned", "tlist": qs}]        
-            if manager_task_list:
-                for tag in worker_tags:
+            if worker_tags:
+                print(worker_tags)
+                for tag in worker_tags:                    
                     tag_id = list(tag.values())[0]
-                    tag_instance = Tag.objects.get(id=tag_id)                
-                    qs = manager_task_list.filter(assigner_tag=tag_instance)                
-                    worker_ctx.append({"name": str(tag_instance), "tlist": qs}) 
+                    if (tag_id):
+                        tag_instance = Tag.objects.get(id=tag_id)                
+                        qs = assigned_task_list.filter(worker_tag=tag_instance)                
+                        worker_ctx.append({"name": str(tag_instance), "tlist": qs}) 
             print(worker_ctx)
         else:
-            worker_ctx = None
-
+            worker_ctx = None 
+        
+        print("----------")
+        print(manager_ctx)
+        print(worker_ctx)
         ctx = {'manager_tasks': manager_ctx, 'employee_tasks': worker_ctx}
         return render(request, self.template, ctx)
 
@@ -554,13 +561,17 @@ class EventDetailView(LoginRequiredMixin, View):
     def get(self, request, pk) :
         event = Event.objects.get(id=pk)
         user = request.user
+        invitees_id = Invitee.objects.filter(event=event).values('user')
+        invitees = UserProfile.objects.filter(id__in=invitees_id)
+
         context = {
             "title": event.title, 
             "description": event.description,
             "starttime": event.starttime,
             "endtime": event.endtime,
             "host": event.host,
-            "location": event.location
+            "location": event.location,
+            "invitees": invitees            
         }
         context["event_id"] = pk
         # if (event.host == user):

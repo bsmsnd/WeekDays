@@ -35,7 +35,7 @@
     <select name="user_id" multiple="multiple" class="selectpicker show-tick form-control bs-select-hidden"  data-live-search="true">
     <option value="0">-- Please Select --</option>
     {% for user in ulist %}
-    <option value="{{user.id}}">{{ user.diaplay_name_and_email }}</option>
+    <option value="{{user.id}}">{{ user.display_name_and_email }}</option>
     {% endfor %}
     </select>
     <p><input type="submit" value="Submit"></p>

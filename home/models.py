@@ -25,7 +25,7 @@ class UserProfile(models.Model):
     def display_name(self):
         return self.user.first_name + " " + self.user.last_name + " (%s)" % self.user.username
 
-    def diaplay_name_and_email(self):
+    def display_name_and_email(self):        
         return self.user.first_name + " " + self.user.last_name + " (%s)" % self.user.email
 
 
@@ -154,6 +154,13 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+    def display_priority(self):
+        return Task.PRIORITY_CHOICES[self.priority - 1][1]  # -1 to align with PRIORITY_CHOICES
+
+    def display_progress(self):
+        return Task.PROGRESS_CHOICES[self.progress - 1][1]  # -1 to align with PROGRESS_CHOICES
+     
 
 
 class Event(models.Model):

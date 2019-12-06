@@ -23,7 +23,7 @@
 {% if manager_task_list %}    
    <ul>
     {% for task in manager_task_list %}
-    <li> <a href="{% url 'task_detail' task.id %}">{{task.title}}</a></li>
+    <li> <a href="{% url 'task_detail' task.id %}">{{task.title}}</a>  (Progress: {{task.display_progress}})</li>
     {% endfor %}
 </ul>
 {% else %}
@@ -37,7 +37,7 @@
 {% if assigned_task_list %}
 <ul>
     {% for task in assigned_task_list %}
-    <li><a href="{% url 'task_detail' task.id %}">{{task.title}}</a></li>
+    <li><a href="{% url 'task_detail' task.id %}">{{task.title}}</a>  (Progress: {{task.display_progress}})</li>
     {% endfor %}
     </ul>
 {% else %}

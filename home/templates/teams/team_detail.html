@@ -54,7 +54,7 @@
     <select name="user_id">
     <option value="0">-- Please Select --</option>
     {% for user in ulist %}
-    <option value="{{user.id}}">{{ user.diaplay_name_and_email }}</option>
+    <option value="{{user.id}}">{{ user.display_name_and_email }}</option>
     {% endfor %}
     </select>
     <input type="submit" value="Add a Member">
